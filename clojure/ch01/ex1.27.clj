@@ -28,3 +28,4 @@
   (is (= true (congruent 2821)))
   (is (= true (congruent 6601))))
 
+(run-tests)

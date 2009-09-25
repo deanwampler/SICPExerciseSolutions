@@ -26,3 +26,5 @@
   (is (> 0.001 (abs (- 0.25 (simpsons-rule2 cube 0.0 1.0 100)))))
   (is (> 0.001 (abs (- 0.25 (simpsons-rule2 cube 0.0 1.0 1000)))))
   (is (> 0.001 (abs (- 0.25 (simpsons-rule2 cube 0.0 1.0 10000))))))
+
+(run-tests)

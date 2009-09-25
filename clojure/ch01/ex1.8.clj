@@ -23,3 +23,5 @@
 (deftest test-cube-root
   (is (< (abs (- (cube-root  8E15) 2E5)) 1.0))
   (is (< (abs (- (cube-root  8E-15) 2E-5)) 1.0)))
+
+(run-tests)

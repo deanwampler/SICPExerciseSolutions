@@ -26,3 +26,5 @@
   ; Appears to stack overflow; see next problem that uses tail recursion
   ;(is (> 0.001 (abs (- 0.25 (simpsons-rule cube 0.0 1.0 10000)))))
   )
+
+(run-tests)

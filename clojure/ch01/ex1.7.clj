@@ -46,3 +46,5 @@
   ; For very small X, the original sqrt is horrible; this test fails
   ; (is (< (abs (- (sqrt  4E-16) 2E-8)) 0.002)) ; note the error range!
   (is (< (abs (- (sqrt2 4E-16) 2E-8)) 1E-12)))
+
+(run-tests)

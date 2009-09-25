@@ -30,3 +30,4 @@
   (is (= 32 (fast-expt2 2 5)))
   (is (= 64 (fast-expt2 2 6))))
 
+(run-tests)

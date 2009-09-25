@@ -22,3 +22,6 @@
   (is (= 199  (smallest-divisor 199)))
   (is (= 1999 (smallest-divisor 1999)))  
   (is (= 7    (smallest-divisor 19999))))
+
+; Stack overflow? TODO
+; (run-tests)  

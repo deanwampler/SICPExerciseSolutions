@@ -4,6 +4,7 @@
   (if (> a b) null_value 
       (combiner (term a) (accumulate combiner null_value term (next a) next b))))
 
+; TODO Add trampoline
 (defn accumulate2 [combiner null_value term a next b]
   (defn ac [a2 accum]
     (if (> a2 b) accum 
@@ -70,4 +71,6 @@
   (is (> 0.001 (abs (- 0.25 (simpsons-rule2 cube 0.0 1.0 100)))))
   (is (> 0.001 (abs (- 0.25 (simpsons-rule2 cube 0.0 1.0 1000)))))
   (is (> 0.001 (abs (- 0.25 (simpsons-rule2 cube 0.0 1.0 10000))))))
+
+(run-tests)
 

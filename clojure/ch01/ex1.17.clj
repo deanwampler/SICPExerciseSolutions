@@ -18,3 +18,5 @@
   (is (= 10 (mult 2 5)))
   (is (= 12 (mult 2 6)))
   (is (= 14 (mult 2 7))))
+
+(run-tests)

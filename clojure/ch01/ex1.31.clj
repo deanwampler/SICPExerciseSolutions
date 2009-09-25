@@ -37,9 +37,12 @@
   (is (= 720  (fact2 6)))
   (is (= 5040 (fact2 7))))
 
+(run-tests)
+
 ; fact2 is actually slower! That's believable for low "n", because of the 
 ; overhead of trampoling, but surprising for large "n".
 (time (fact  7))
 (time (fact2 7))
 (time (fact  200))
 (time (fact2 200))
+

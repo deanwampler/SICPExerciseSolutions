@@ -30,3 +30,5 @@
   (is (= 11 (fib3b 5)))
   (is (= 20 (fib3b 6)))
   (is (= 37 (fib3b 7))))
+
+(run-tests)

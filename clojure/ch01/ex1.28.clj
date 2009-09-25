@@ -34,3 +34,5 @@
   (is (= false (fast-prime? 2465 1000)))
   (is (= false (fast-prime? 2821 1000)))
   (is (= false (fast-prime? 6601 1000))))
+
+(run-tests)

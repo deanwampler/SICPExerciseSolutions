@@ -16,3 +16,5 @@
 
 (deftest test-sine-num-iterations
   (is (= 5 @num-iterations)))
+
+(run-tests)

@@ -9,3 +9,5 @@
   (is (= 1 (a-plus-abs-b 1, 0)))
   (is (= 2 (a-plus-abs-b 1, 1)))
   (is (= 3 (a-plus-abs-b 1, 2))))
+
+(run-tests)

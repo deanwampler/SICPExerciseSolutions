@@ -24,3 +24,5 @@
   (is (= 6 (pascals-triangle 5 3)))
   (is (= 4 (pascals-triangle 5 4)))
   (is (= 1 (pascals-triangle 5 5))))
+
+(run-tests)
