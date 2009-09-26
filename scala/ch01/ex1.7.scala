@@ -1,11 +1,12 @@
 // The original implementation in the book:
 
-def square (x: Double) = x * x
-
 def average (x: Double, y: Double) = (x + y) / 2
   
-def abs (x: Double) = Math.abs(x)
+def square (x: Double) = x * x
   
+// Could import this Math function, but we get type ambiguities (?)
+def abs (x: Double) = Math.abs(x)
+
 def improve (guess: Double, x: Double) = average(guess, x / guess)
   
 def goodEnough (guess: Double, x: Double) = abs(square(guess) - x) < 0.00001

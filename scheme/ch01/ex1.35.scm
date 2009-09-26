@@ -1,4 +1,5 @@
 #lang scheme
+(require (planet schematics/schemeunit:3))
 
 ; Calculate the golden ratio, phi.
 
@@ -18,5 +19,5 @@
         (try next))))
   (try first-guess))
   
-(fixed-point (lambda (x) (+ 1 (/ 1 x))) 1.0)  ; 1.6180327868852458
+(check-= 1.6180327868852458 (fixed-point (lambda (x) (+ 1 (/ 1 x))) 1.0) tolerance)
 

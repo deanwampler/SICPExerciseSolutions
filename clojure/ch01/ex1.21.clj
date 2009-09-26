@@ -2,14 +2,14 @@
 
 (defn square [n] (* n n))
 
-(defn smallest-divisor [n] (find-divisor n 2))
-
 (defn divides? [test-divisor n] (= (rem n test-divisor) 0))
 
 (defn find-divisor [n test-divisor]
   (cond (> (square test-divisor) n) n
         (divides? test-divisor n) test-divisor
         :else (find-divisor n  (+ test-divisor 1))))
+
+(defn smallest-divisor [n] (find-divisor n 2))
 
 (defn prime? [n] (= (smallest-divisor n) n))
 
@@ -23,5 +23,4 @@
   (is (= 1999 (smallest-divisor 1999)))  
   (is (= 7    (smallest-divisor 19999))))
 
-; Stack overflow? TODO
-; (run-tests)  
+(run-tests)  

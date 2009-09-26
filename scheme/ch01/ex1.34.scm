@@ -7,4 +7,5 @@
 (f square)
 (f (lambda (x) (* x (+ x 1))))
 
-(f f)  ; fails to parse
+; fails to parse
+; (f f)  

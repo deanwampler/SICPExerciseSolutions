@@ -7,17 +7,16 @@
 
 ; tail recursive
 (defn prod2 [term a next b]
-  (defn p [a2 accum]
+  (loop [a2 a accum 1.0]
     (if (> a2 b)
       accum
-      #(p (next a2) (* accum (term a2)))))
-  (trampoline (p a 1.0)))
+      (recur (next a2) (* accum (term a2))))))
 
-(defn identity [n] n)
-(defn inc [n] (+ n 1))
+(defn ident [n] n)
+(defn increment [n] (+ n 1))
 
-(defn fact  [n] (prod  identity 1 inc n))
-(defn fact2 [n] (prod2 identity 1 inc n))
+(defn fact  [n] (prod  ident 1 increment n))
+(defn fact2 [n] (prod2 ident 1 increment n))
 
 (deftest test-fact
   (is (= 1    (fact 1)))

@@ -6,6 +6,10 @@ These are solutions for many of the SICP exercises, written in Scheme, Scala, an
 
 Feedback is welcome.
 
+## Makefile ##
+
+There is a simple Makefile that runs all the solutions. However, it appears that failed tests don't return "$? = 1" for all the runtimes (?), so if a particular exercise solution fails, make won't exit.
+
 ## Scheme Solutions ##
 
 Most of the Scheme solutions use just the features learned up to that point. The only exceptions are a few exercises where I used output functions and the `(set! ...)` form before the book introduced them, in order to test the results.
@@ -30,6 +34,8 @@ I used Scala v2.7.5 and [ScalaTest](http://www.artima.com/scalatest/) v0.9.5 to 
 
 (I suppressed some of the output.)
 
+Sometimes I defined versions of functions for which JDK implementations already exist, e.g., `abs` (absolute).
+
 ## Clojure Solutions ##
 
 I'm a novice Clojure user, so some of the solutions may be naive!
@@ -39,3 +45,8 @@ I used the `clojure.contrib.test-is` package to write the exercises as unit test
     (run-tests)
     
 Note that `(run-tests)` runs *all* the tests that have been defined in the current REPL session, not just test(s) for the last-loaded solution.
+
+**Note**: You must use compatible versions of clojure-contrib and clojure. For example, the latest clojure-contrib on GitHub won't work with clojure 1.0.0. If you have the code examples for Stuart Halloway's *Programming Clojure*, you can use his `bin/repl.sh` script to run my solutions. His distribution includes compatible versions of clojure and clojure-contrib (built around the time of 1.0.0 alpha release), along with other goodies.
+
+As for my Scala solutions, sometimes I define versions of functions for which JDK or Clojure core implementations already exist, e.g., `abs` (absolute) and `even?`.
+

@@ -8,7 +8,7 @@ def expmod (base: Int, exp: Int, m: Int): Int = exp match {
   case _ => (base * expmod(base, exp - 1, m)) %m
 }
 
-def congruent(n: int) = {
+def congruent(n: Int) = {
   def c(n: Int, a: Int): Boolean = if (a == n)
     true
   else if (expmod(a, n, n) == (a % n))

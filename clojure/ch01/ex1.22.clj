@@ -19,8 +19,9 @@
   (time (if (prime? n) (println "yes") (println ""))))
     
 (defn search-for-primes [start end]
-  (if (< start end) 
-      ((timed-prime-test start) (search-for-primes (+ start 2) end))))
+  (loop [s start e end]
+    (if (< s e) 
+      (do (timed-prime-test start) (recur (+ s 2) e)))))
                 
 ; prints out results:
 (search-for-primes 1001 1101)

@@ -6,4 +6,5 @@
 (f square)
 (f #(* % (+ % 1)))
 
-(f f)
+; Will fail...
+; (f f)
