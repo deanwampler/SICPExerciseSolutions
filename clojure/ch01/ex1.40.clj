@@ -37,6 +37,7 @@
 (println (newtons-method (cubic 1 2 1) 1.0))    ; -0.5698402909980529
 (println (newtons-method (cubic 1 1 2) 1.0))    ; -1.3532099641952162
 
+; Is there a method like this in test-is?? Couldn't find something like it documented.
 (defn is-within [expected actual delta]
   (< (abs (- expected actual)) delta))
 

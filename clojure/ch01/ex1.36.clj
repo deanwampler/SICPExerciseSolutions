@@ -19,6 +19,7 @@
               (do (println count) next-guess)
             :else (recur next-guess (+ count 1))))))
 
+; Is there a method like this in test-is?? Couldn't find something like it documented.
 (defn is-within [expected actual delta]
   (< (abs (- expected actual)) delta))
   
