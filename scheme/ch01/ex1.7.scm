@@ -38,6 +38,8 @@
 ; The original sqrt is actually more accurate for large X, if we use a larger
 ; delta (0.001) in the good-enough? and good-enough2? methods. With 0.00001, 
 ; they are about the same.
+(check-= (sqrt  2) 1.414213562373095 0.0001)
+(check-= (sqrt2 2) 1.414213562373095 0.0001)
 (check-= (sqrt  4E16) 2E8 1.0)
 (check-= (sqrt2 4E16) 2E8 1.0)
 ; For very small X, the original sqrt is horrible; this test fails
