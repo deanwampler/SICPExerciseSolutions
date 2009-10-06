@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.contrib.test-is))
 (use '[clojure.contrib.except :only (throw-if)])
 
 ; Old sqrt calculation from ex. 1.46:
@@ -31,22 +31,16 @@
 
 (defn make-point [x y] [x y])
 
-(defn x-point [p]
-  (first p))
-
-(defn y-point [p]
-  (first (rest p)))
+(defn x-point [p] (get p 0))
+(defn y-point [p] (get p 1))
   
 (defn equal-points? [p1 p2]
   (and (= (x-point p1) (x-point p2)) (= (y-point p1) (y-point p2))))
 
 (defn make-segment [start end] [start end])
   
-(defn start-segment [s]
-  (first s))
-
-(defn end-segment [s]
-  (first (rest s)))
+(defn start-segment [s] (get s 0))
+(defn end-segment [s]   (get s 1))
 
 (defn midpoint-segment [s]
   (let [x1 (x-point (start-segment s))
@@ -72,13 +66,13 @@
 (defn make-rect [p1 p2 p3 p4] [p1 p2 p3 p4])
 
 (defn height-rect [r]
-  (let [p4 (first (rest (rest (rest r))))
-        p1 (first r)]
+  (let [p4 (get r 3)
+        p1 (get r 0)]
         (length-line p4 p1)))
 
 (defn width-rect [r]
-  (let [p2 (first (rest r))
-        p1 (first r)]
+  (let [p2 (get r 1)
+        p1 (get r 0)]
         (length-line p2 p1)))
   
 ; pass in the functions to calculate the height and width, so we can configure
@@ -126,13 +120,13 @@
   [s1 s2])
 
 (defn height-rect-segment [r]
-  (let [p2 (start-segment (first r))
-        p1 (end-segment   (first r))]
+  (let [p2 (start-segment (get r 0))
+        p1 (end-segment   (get r 0))]
         (length-line p1 p2)))
 
 (defn width-rect-segment [r]
-  (let [p2 (start-segment (first (rest r)))
-        p1 (end-segment   (first (rest r)))]
+  (let [p2 (start-segment (get r 1))
+        p1 (end-segment   (get r 1))]
         (length-line p1 p2)))
   
 (deftest test-rect-with-2-segments

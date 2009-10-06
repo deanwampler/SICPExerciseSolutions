@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.contrib.test-is))
 (use '[clojure.contrib.except :only (throw-if)])
 
 ;(defn even? [n] (= 0 (rem n 2)))

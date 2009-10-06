@@ -1,20 +1,14 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.contrib.test-is))
 
 (defn make-point [x y] [x y])
 
-(defn x-point [p]
-  (first p))
+(defn x-point [p] (get p 0))
+(defn y-point [p] (get p 1))
 
-(defn y-point [p]
-  (first (rest p)))
-  
 (defn make-segment [start end] [start end])
   
-(defn start-segment [s]
-  (first s))
-
-(defn end-segment [s]
-  (first (rest s)))
+(defn start-segment [s] (get s 0))
+(defn end-segment [s]   (get s 1))
 
 (defn midpoint-segment [s]
   (let [x1 (x-point (start-segment s))

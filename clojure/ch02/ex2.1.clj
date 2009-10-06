@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.contrib.test-is))
 
 (defn gcd [a b]
   (if (= b 0)
@@ -14,11 +14,11 @@
 
 (defn make-rat [n d] 
   (let [nd (rationalize-signs n d)
-        g (gcd (abs (first nd)) (abs (first (rest nd))))]
-    [(/ (first nd) g) (/ (first (rest nd)) g)]))
+        g (gcd (abs (get nd 0)) (abs (get nd 1)))]
+    [(/ (get nd 0) g) (/ (get nd 1) g)]))
     
-(defn numer [x] (first x))
-(defn denom [x] (first (rest x)))
+(defn numer [x] (get x 0))
+(defn denom [x] (get x 1))
 
 (defn display-rat [r]
   (println (format "%d/%d" (numer r) (denom r))))

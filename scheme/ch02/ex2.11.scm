@@ -5,10 +5,6 @@
 (define (lower-bound x) (car x))
 (define (upper-bound x) (cdr x))
 
-(define (add-interval x y)
-  (make-interval (+ (lower-bound x) (lower-bound y))
-                 (+ (upper-bound x) (upper-bound y))))
-
 (define (mul-interval-old x y)
   (let ((p1 (* (lower-bound x) (lower-bound y)))
         (p2 (* (lower-bound x) (upper-bound y)))
@@ -32,7 +28,7 @@
 (define (mul-interval x y)
   (define (bounds lx ux ly uy)
     (and (lx (lower-bound x) 0) (ux (upper-bound x) 0) 
-             (ly (lower-bound y) 0) (uy (upper-bound y) 0)))
+         (ly (lower-bound y) 0) (uy (upper-bound y) 0)))
   (define (mk-interval a b c d)
     (make-interval (* a b) (* c d))) 
 
