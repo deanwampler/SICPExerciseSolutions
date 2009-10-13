@@ -6,7 +6,7 @@
 (defn upper-bound [x] (get x 1))
 
 (defn make-center-percent [center percent]
-  (let [half-delta (* center (/ percent 100.0))]
+  (let [half-delta (/ (* center percent) 100.0)]
     (make-interval (- center half-delta) (+ center half-delta))))
 
 (defn center [i]

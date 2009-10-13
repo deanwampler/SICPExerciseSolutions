@@ -6,7 +6,7 @@ def lowerBound (x: Interval) = x._1
 def upperBound (x: Interval) = x._2
 
 def makeCenterPercent (center: N, percent: N) = {
-  val halfDelta = center * (percent / 100.0)
+  val halfDelta = (center * percent) / 100.0
   makeInterval (center - halfDelta, center + halfDelta)
 }
 
