@@ -1,0 +1,24 @@
+Using the definitions in Ex. 2.14,
+"par1" doubles the percentage error when multiplying the numerator terms:
+
+(display (center (mul-interval r1 r2)))  ; 11001.099999999999
+
+(display (percent (mul-interval r1 r2))) ; 1.9998000199979924
+
+While the addition doesn't affect the error much:
+
+(display (center (add-interval r1 r2)))  ; 210.0
+
+(display (percent (add-interval r1 r2))) ; 0.9999999999999972
+
+
+Also, each "appearance" of a term introduces a error in the calculation, due to
+rounding of floating point calculations to 2**N bits. So, the fewer times the
+terms appear, the better, and avoiding multiplication of terms avoids increasing
+the error, which is true in par2.
+
+In contrast, looking at the formula for par2, the error from each term only
+enters once and most of the rest of the arithmatic is done with 1 as a value,
+which fits exactly into 2's complement arithmetic. So the error propagation is
+minimized.
+
