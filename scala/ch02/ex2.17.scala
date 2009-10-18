@@ -27,7 +27,6 @@ object lastPairSpec extends Spec with ShouldMatchers {
         lastPair(Nil)
       }
     }
-    
   }
 } 
 
