@@ -47,38 +47,38 @@ def mulInterval (x: Interval, y: Interval) = {
 
   def mkInterval (a:N, b:N, c:N, d:N) = makeInterval(a*b, c*d)
 
-  if (bounds(<, <, <, <))
-    mkInterval (upperBound(x), upperBound(y) lowerBound(x) lowerBound(y))
-  else if (bounds (<, <, <, >=))
-    mkInterval (lowerBound(x) upperBound(y) lowerBound(x) lowerBound(y))
-  else if (bounds (<, <, >=, >=))
-    mkInterval (lowerBound(x) upperBound(y) upperBound(x) lowerBound(y))
-  else if (bounds (<, >=, <, <))
-    mkInterval (upperBound(x) lowerBound(y) lowerBound(x) lowerBound(y))
-  else if (bounds (<, >=, <, >=)) {
+  if (bounds(_ < _, _ < _, _ < _, _ < _))
+    mkInterval (upperBound(x), upperBound(y), lowerBound(x), lowerBound(y))
+  else if (bounds (_ < _, _ < _, _ < _, _ >= _))
+    mkInterval (lowerBound(x), upperBound(y), lowerBound(x), lowerBound(y))
+  else if (bounds (_ < _, _ < _, _ >= _, _ >= _))
+    mkInterval (lowerBound(x), upperBound(y), upperBound(x), lowerBound(y))
+  else if (bounds (_ < _, _ >= _, _ < _, _ < _))
+    mkInterval (upperBound(x), lowerBound(y), lowerBound(x), lowerBound(y))
+  else if (bounds (_ < _, _ >= _, _ < _, _ >= _)) {
     val p1 = lowerBound(x) * upperBound(y)
     val p2 = upperBound(x) * lowerBound(y)
     val p3 = lowerBound(x) * lowerBound(y)
     val p4 = upperBound(x) * upperBound(y)
     makeInterval (min (p1, p1), max (p3, p4))
   }
-  else if (bounds (<, >=, >=, >=))
-    mkInterval (lowerBound(x) upperBound(y) upperBound(x) upperBound(y))
-  else if (bounds (>=, >=, <, <))
-    mkInterval (upperBound(x) upperBound(y) upperBound(x) lowerBound(y))
-  else if (bounds (>=, >=, <, >=))
-    mkInterval (upperBound(x) lowerBound(y) upperBound(x) upperBound(y))
+  else if (bounds (_ < _, _ >= _, _ >= _, _ >= _))
+    mkInterval (lowerBound(x), upperBound(y), upperBound(x), upperBound(y))
+  else if (bounds (_ >= _, _ >= _, _ < _, _ < _))
+    mkInterval (upperBound(x), upperBound(y), upperBound(x), lowerBound(y))
+  else if (bounds (_ >= _, _ >= _, _ < _, _ >= _))
+    mkInterval (upperBound(x), lowerBound(y), upperBound(x), upperBound(y))
   else   
-    mkInterval (lowerBound(x) lowerBound(y) upperBound(x) upperBound(y))
+    mkInterval (lowerBound(x), lowerBound(y), upperBound(x), upperBound(y))
 }
 
-val minus-three-minus-two-interval = makeInterval (-3.0, -2.0)
-val minus-two-minus-one-interval = makeInterval (-2.0, -1.0)
-val minus-two-two-interval = makeInterval (-2.0, 2.0)
-val minus-one-one-interval = makeInterval (-1.0, 1.0)
-val zero-one-interval      = makeInterval ( 0.0, 1.0)
-val two-three-interval     = makeInterval ( 2.0, 3.0)
-val four-five-interval     = makeInterval ( 4.0, 5.0)
+val minusThreeMinusTwoInterval = makeInterval (-3.0, -2.0)
+val minusTwoMinusOneInterval = makeInterval (-2.0, -1.0)
+val minusTwoTwoInterval  = makeInterval (-2.0, 2.0)
+val minusOneOneInterval  = makeInterval (-1.0, 1.0)
+val zeroOneInterval      = makeInterval ( 0.0, 1.0)
+val twoThreeInterval     = makeInterval ( 2.0, 3.0)
+val fourFiveInterval     = makeInterval ( 4.0, 5.0)
 
 import org.scalatest._
 import org.scalatest.matchers._
@@ -87,30 +87,30 @@ object newMulIntervalSpec extends Spec with ShouldMatchers {
   def equalMulIntervals (x: Interval, y: Interval) = {
     val expected = mulIntervalOld (x, y)
     val actual   = mulInterval (x, y)
-    lowerBound(actual) should equal lowerBound(expected)
-    upperBound(actual) should equal upperBound(expected)
+    lowerBound(actual) should equal (lowerBound(expected))
+    upperBound(actual) should equal (upperBound(expected))
   }
   describe ("new mulInterval") {
     it ("should compute the same result as the old mulInterval") {
       // case 1
-      equalMulIntervals (minus-three-minus-two-interval, minus-two-minus-one-interval) 
+      equalMulIntervals (minusThreeMinusTwoInterval, minusTwoMinusOneInterval) 
       // case 2
-      equalMulIntervals (minus-three-minus-two-interval, minus-one-one-interval) 
+      equalMulIntervals (minusThreeMinusTwoInterval, minusOneOneInterval) 
       // case 3
-      equalMulIntervals (minus-three-minus-two-interval, zero-one-interval) 
-      equalMulIntervals (minus-three-minus-two-interval, four-five-interval) 
+      equalMulIntervals (minusThreeMinusTwoInterval, zeroOneInterval) 
+      equalMulIntervals (minusThreeMinusTwoInterval, fourFiveInterval) 
       // case 4
-      equalMulIntervals (minus-one-one-interval, minus-three-minus-two-interval) 
+      equalMulIntervals (minusOneOneInterval, minusThreeMinusTwoInterval) 
       // case 5              
-      equalMulIntervals (minus-two-two-interval, minus-one-one-interval) 
+      equalMulIntervals (minusTwoTwoInterval, minusOneOneInterval) 
       // case 6              
-      equalMulIntervals (minus-two-two-interval, four-five-interval) 
+      equalMulIntervals (minusTwoTwoInterval, fourFiveInterval) 
       // case 7              
-      equalMulIntervals (four-five-interval, minus-two-two-interval) 
+      equalMulIntervals (fourFiveInterval, minusTwoTwoInterval) 
       // case 8              
-      equalMulIntervals (four-five-interval, minus-two-two-interval) 
+      equalMulIntervals (fourFiveInterval, minusTwoTwoInterval) 
       // case 9              
-      equalMulIntervals (two-three-interval, four-five-interval) 
+      equalMulIntervals (twoThreeInterval, fourFiveInterval) 
     }
   }
 }

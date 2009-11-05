@@ -18,30 +18,31 @@
   
 ; mul-interval definition from ex2.11, if you assume that no negative lower and
 ; and upper bounds are ever negative.
-(define (mul-interval x y)
+; (I'll give each version, except the last, a number suffix so it compiles...):
+(define (mul-interval-1 x y)
   (make-interval (* (lower-bound x) (lower-bound y))
                  (* (upper-bound x) (upper-bound y))))
 
-; From make-center-percent, this can be rewritten in terms of center and percent:
-(define (mul-interval x y)
+; From make-center-percent, this can be rewritten in terms of center and percent
+(define (mul-interval-2 x y)
   (let ((center-x (center x))
         (center-y (center y))
         (percent-x (percent x))
         (percent-y (percent y))
-        (half-delta-x (/ (* center-x percent-x) 100.0))
-        (half-delta-y (/ (* center-y percent-y) 100.0)))
+        (half-delta-x (/ (* (center x) (percent x)) 100.0))
+        (half-delta-y (/ (* (center y) (percent y)) 100.0)))
     (make-interval (* (- center-x half-delta-x) (- center-y half-delta-y))
                    (* (+ center-x half-delta-x) (+ center-x half-delta-y)))))
 
 ; where *-x are the center and half-delta for x, same for y, and half-delta is
 ; as defined in make-center-percent. rearranging terms
-(define (mul-interval x y)
+(define (mul-interval-3 x y)
   (let ((center-x (center x))
         (center-y (center y))
         (percent-x (percent x))
         (percent-y (percent y))
-        (half-delta-x (/ (* center-x percent-x) 100.0))
-        (half-delta-y (/ (* center-y percent-y) 100.0)))
+        (half-delta-x (/ (* (center x) (percent x)) 100.0))
+        (half-delta-y (/ (* (center y) (percent y)) 100.0)))
     (make-interval (+ (* center-x center-y) (- (* center-x half-delta-y))
                     (- (* center-y half-delta-x)) (* half-delta-x half-delta-y))
                    (+ (* center-x center-y) (* center-x half-delta-y)
@@ -55,8 +56,8 @@
         (center-y (center y))
         (percent-x (percent x))
         (percent-y (percent y))
-        (half-delta-x (/ (* center-x percent-x) 100.0))
-        (half-delta-y (/ (* center-y percent-y) 100.0)))
+        (half-delta-x (/ (* (center x) (percent x)) 100.0))
+        (half-delta-y (/ (* (center y) (percent y)) 100.0)))
     (make-interval (+ (* center-x center-y) (- (* center-x half-delta-y))
                       (- (* center-y half-delta-x)))
                    (+ (* center-x center-y) (* center-x half-delta-y)
@@ -64,33 +65,33 @@
 
 ; From this, we can define mul-interval-center-percent that takes centers and 
 ; percents, instead of x and y:
-(define (mul-interval-center-percent center-x percent-x center-y percent-y)
+(define (mul-interval-center-percent-1 center-x percent-x center-y percent-y)
   (let ((half-delta-x (/ (* center-x percent-x) 100.0))
         (half-delta-y (/ (* center-y percent-y) 100.0)))
     (make-interval (+ (* center-x center-y) (- (* center-x half-delta-y))
                       (- (* center-y half-delta-x)))
                    (+ (* center-x center-y) (* center-x half-delta-y)
                       (* center-y half-delta-x)))))
-(define (mul-interval-center-percent center-x percent-x center-y percent-y)
+(define (mul-interval-center-percent-2 center-x percent-x center-y percent-y)
   (make-interval (+ (* center-x center-y) (- (* center-x (/ (* center-y percent-y) 100.0)))
                     (- (* center-y (/ (* center-x percent-x) 100.0))))
                  (+ (* center-x center-y) (* center-x (/ (* center-y percent-y) 100.0))
                     (* center-y (/ (* center-x percent-x) 100.0)))))
-(define (mul-interval-center-percent center-x percent-x center-y percent-y)
+(define (mul-interval-center-percent-3 center-x percent-x center-y percent-y)
   (let ((center-xy  (* center-x center-y))
         (half-delta-xy (+ (* center-x (/ (* center-y percent-y) 100.0)) 
                           (* center-y (/ (* center-x percent-x) 100.0)))))
     (make-interval (- center-xy half-delta-xy) (+ center-xy half-delta-xy))))
-(define (mul-interval-center-percent center-x percent-x center-y percent-y)
+(define (mul-interval-center-percent-4 center-x percent-x center-y percent-y)
   (let ((center-xy  (* center-x center-y))
         (percent-xy (+ percent-x percent-y))
-        (half-delta-xy (/ (* center-xy percent-xy) 100.0)))
+        (half-delta-xy (/ (* (* center-x center-y) (+ percent-x percent-y)) 100.0)))
     (make-interval (- center-xy half-delta-xy) (+ center-xy half-delta-xy))))
 
 ; Recall that make-center-percenter is defined:
-(define (make-center-percent center percent)
-  (let ((half-delta (/ (* center percent) 100.0)))
-    (make-interval (- center half-delta) (+ center half-delta))))
+;(define (make-center-percent center percent)
+;  (let ((half-delta (/ (* center percent) 100.0)))
+;    (make-interval (- center half-delta) (+ center half-delta))))
 
 (define (mul-interval-center-percent center-x percent-x center-y percent-y)
   (let ((center-xy  (* center-x center-y))
