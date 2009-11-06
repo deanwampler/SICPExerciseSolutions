@@ -19,14 +19,13 @@ def deepReverse(l: List[_]): List[_] = {
   }
   rev(l, Nil)
 }
-deepReverse (List (List (1, 2), List (3, 4)))
 
 import org.scalatest._ 
 import org.scalatest.matchers._
 
-object reverseSpec extends Spec with ShouldMatchers {
-  describe ("reverse") {
-    it ("should return the input list reversed") {
+object deepReverseSpec extends Spec with ShouldMatchers {
+  describe ("deepReverse") {
+    it ("should return the input list reversed, with nested lists also reversed") {
       reverse(List (List (1, 2), List (3, 4))) should equal (List (List (3, 4), List (1, 2)))
       deepReverse(List (List (1, 2), List (3, 4))) should equal (List (List (4, 3), List (2, 1)))
       deepReverse(List (10, List (1, 2), 20, List (3, 4), 30)) should equal (List (30, List (4, 3), 20, List (2, 1), 10))
@@ -37,5 +36,5 @@ object reverseSpec extends Spec with ShouldMatchers {
     }
   }
 } 
-reverseSpec execute
+deepReverseSpec execute
 
