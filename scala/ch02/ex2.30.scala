@@ -24,6 +24,8 @@ object squareTreeSpec extends Spec with ShouldMatchers {
       squareTree1(
         List (1, List (2, List (3, 4), 5), List (6, 7))) should equal ( 
         List (1, List (4, List (9, 16), 25), List (36, 49)))
+      squareTree1(Nil) should equal (Nil)
+      squareTree1(List(2)) should equal (List(4))
     }
   }
   describe ("squareTree2") {
@@ -31,6 +33,8 @@ object squareTreeSpec extends Spec with ShouldMatchers {
       squareTree2(
         List (1, List (2, List (3, 4), 5), List (6, 7))) should equal ( 
         List (1, List (4, List (9, 16), 25), List (36, 49)))
+      squareTree2(Nil) should equal (Nil)
+      squareTree2(List(2)) should equal (List(4))
     }
   }
 }  
