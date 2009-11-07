@@ -14,7 +14,7 @@ There is a simple Makefile that runs all the solutions. However, it appears that
 
 Most of the Scheme solutions use just the features learned up to that point. The only exceptions are a few exercises where I used output functions and the `(set! ...)` form before the book introduced them, in order to test the results.
 
-I used *SchemeUnit* as the XUnit tool and ran the solutions using *PLT Scheme*. 
+I used *SchemeUnit* as the XUnit tool and ran the solutions using *PLT Scheme*, in particular the *mzscheme* interpreter. One thing I noticed about this version of scheme; there is no *nil* defined for empty lists, as used in the book.. I used *(list)* instead. 
 
 ## Scala Solutions ##
 
