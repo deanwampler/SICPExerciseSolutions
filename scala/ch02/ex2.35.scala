@@ -1,5 +1,5 @@
 def accumulate[A, B] (op: (A, B) => B, 
-                          initial: B, sequence: List[A]): B =
+                      initial: B, sequence: List[A]): B =
   sequence match {
     case Nil => initial
     case _ => op (sequence.head, accumulate(op, initial, sequence.tail))
