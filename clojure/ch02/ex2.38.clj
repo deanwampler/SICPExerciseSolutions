@@ -24,4 +24,13 @@
 
   (is (= (fold-left list (list) (list 1 2 3)) (list (list (list (list) 1) 2) 3))))
 
+; For fold-right and fold-left to return the same results for any sequence, "op"
+; must be commutative, e.g., + and *:
+
+(deftest test-fold-left-right-commutative-for-mult-add
+  (is (= (fold-right + 0 (list 1 2 3 4)) 10))
+  (is (= (fold-left  + 0 (list 1 2 3 4)) 10))
+  (is (= (fold-right * 1 (list 1 2 3 4)) 24))
+  (is (= (fold-left  * 1 (list 1 2 3 4)) 24)))
+
 (run-tests)

@@ -31,3 +31,18 @@ object foldLeftRightSpec extends Spec with ShouldMatchers {
   }
 }
 foldLeftRightSpec execute
+
+// For foldRight and foldLeft to return the same results for any sequence, "op"
+// must be commutative, e.g., + and *:
+
+object foldLeftRightCommutativeOpsSpec extends Spec with ShouldMatchers {
+  describe ("foldLeft and foldRight with + or *") {
+    it ("should return a the same results") {
+      foldRight ((x:Int, y:Int) => x + y, 0, List(1, 2, 3, 4)) should equal (10)
+      foldLeft  ((x:Int, y:Int) => x + y, 0, List(1, 2, 3, 4)) should equal (10)
+      foldRight ((x:Int, y:Int) => x * y, 1, List(1, 2, 3, 4)) should equal (24)
+      foldLeft  ((x:Int, y:Int) => x * y, 1, List(1, 2, 3, 4)) should equal (24)
+    }
+  }
+}
+foldLeftRightCommutativeOpsSpec execute
