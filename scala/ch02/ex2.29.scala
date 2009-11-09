@@ -1,4 +1,8 @@
-// would prefer AnyRef -> Mobile, but that creates a disallowed cylic reference. 
+// To keep the solution close to scheme and clojure version, I'll use an Either
+// to allow a branch to have either a terminal weight or a "submobile". An alternative
+// would be to have a uniform "end" type with subtypes that represent the two
+// cases.
+// Would prefer AnyRef -> Mobile, but that creates a disallowed cylic reference. 
 type Structure = Either[Int, Pair[_,_]]  
 type Branch = Pair[Int, Structure]
 type Mobile = Pair[Branch,Branch]
