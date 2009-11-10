@@ -2,10 +2,9 @@
 // Contrast with ex. 2.30, where we matched on i:Int, and x, where the "x" would
 // something unknown. Unfortunately, if you try "a:A", you get an erasure warning,
 // so we let "a" match anything and then cast to A.
-def treeMap[A] (f: A => A, tree: List[_]): List[_] = tree map { _ match {
+def treeMap[A] (f: A => A, tree: List[_]): List[_] = tree map {
   case l:List[_] => treeMap(f, l)
   case a => f(a.asInstanceOf[A])
-  }
 }
 
 def squareTree(tree: List[_]): List[_] = treeMap[Int](i => i*i, tree)

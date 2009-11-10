@@ -8,11 +8,10 @@ def squareTree1(tree: List[_]): List[_] = tree match {
   }
 }
     
-def squareTree2 (tree: List[_]): List[_] = tree map { _ match {
+def squareTree2 (tree: List[_]): List[_] = tree map {
   case l:List[_] => squareTree2(l)
   case i:Int => i * i
   case x => throw new RuntimeException("unknown type of list element: " + x)
-  }
 }
 
 import org.scalatest._ 
