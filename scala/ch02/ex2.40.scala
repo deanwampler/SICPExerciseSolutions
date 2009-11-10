@@ -53,7 +53,7 @@ enumerateIntervalSpec execute
 
 object uniquePairsSpec extends Spec with ShouldMatchers {
   describe ("uniquePairs") {
-    it ("should return a list of pairs (i,j), i<j and 1 <= i <= n") {
+    it ("should return a list of pairs (i,j), i>j and 1 <= i <= n") {
       uniquePairs (6) should equal (List(
         (2, 1), (3, 1), (3, 2), (4, 1), (4, 2), (4, 3), 
         (5, 1), (5, 2), (5, 3), (5, 4), 
