@@ -25,7 +25,8 @@
         (below (beside smaller smaller) painter))))
         
 ; For testing purposes, we'll just use a list of an arbitrary element for "painter":
-
+; To distinguish beside from below, use a list of two elements for beside and a
+; list of 2 lists for below.
 (define (beside p1 p2)
   (list p1 p2))
 (define (below p1 p2)
