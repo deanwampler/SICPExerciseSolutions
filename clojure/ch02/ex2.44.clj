@@ -16,7 +16,7 @@
   (if (= n 0)
       painter
       (let [smaller (up-split painter (- n 1))]
-        (below (beside smaller smaller) painter))))
+        (below painter (beside smaller smaller)))))
         
 (defn corner-split [painter n]
   (if (= n 0)
@@ -31,7 +31,7 @@
                   
 (deftest test-splits
   (is (= (right-split 1 1)  [1 [[1] [1]]]))
-  (is (= (up-split 1 1)     [[[1 1]] [1]]))
+  (is (= (up-split 1 1)     [[1] [[1 1]]]))
   (is (= (corner-split 1 1) [[[1] [[1 1]]] [[[[1] [1]]] [1]]])))
 
 (run-tests)

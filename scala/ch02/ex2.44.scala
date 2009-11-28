@@ -18,7 +18,7 @@ def upSplit(painter: Painter, n: Int): Painter =
     painter
   else {
     val smaller = upSplit(painter, n - 1)
-    below(beside(smaller, smaller), painter)
+    below(painter, beside(smaller, smaller))
   }
         
 def cornerSplit(painter: Painter, n: Int): Painter = 
@@ -45,7 +45,7 @@ object splitSpec extends Spec with ShouldMatchers {
   }
   describe ("upSplit") {
     it ("should return a 2-element list with a list of a list of 2 painter elements, followed by a list of painter") {
-      upSplit(List(1), 1)  should equal (List(List(List(List(1), List(1))), List(List(1))))
+      upSplit(List(1), 1)  should equal (List(List(List(1)), List(List(List(1), List(1)))))
     }
   }
   describe ("cornerSplit") {
