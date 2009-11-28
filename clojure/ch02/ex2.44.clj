@@ -31,7 +31,9 @@
                   
 (deftest test-splits
   (is (= (right-split 1 1)  [1 [[1] [1]]]))
+  (is (= (right-split 1 2)  [1 [[[1 [[1] [1]]]] [[1 [[1] [1]]]]]]))
   (is (= (up-split 1 1)     [[1] [[1 1]]]))
+  (is (= (up-split 1 2)     [[1] [[[[1] [[1 1]]] [[1] [[1 1]]]]]]))
   (is (= (corner-split 1 1) [[[1] [[1 1]]] [[[[1] [1]]] [1]]])))
 
 (run-tests)

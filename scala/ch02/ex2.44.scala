@@ -37,21 +37,25 @@ def cornerSplit(painter: Painter, n: Int): Painter =
 import org.scalatest._ 
 import org.scalatest.matchers._
 
-object splitSpec extends Spec with ShouldMatchers {
+object splitsSpec extends Spec with ShouldMatchers {
   describe ("rightSplit") {
     it ("should return a 2-element list with painter and a list of 2, single-element lists of painter") {
-      rightSplit(List(1), 1)  should equal (List(List(1), List(List(List(1)), List(List(1)))))
+      rightSplit(List(1), 1) should equal (List(List(1), List(List(List(1)), List(List(1)))))
+      rightSplit(List(1), 2) should equal (List(List(1), List(List(List(List(1), List(List(List(1)), List(List(1))))), 
+                                                               List(List(List(1), List(List(List(1)), List(List(1))))))))
     }
   }
   describe ("upSplit") {
     it ("should return a 2-element list with a list of a list of 2 painter elements, followed by a list of painter") {
-      upSplit(List(1), 1)  should equal (List(List(List(1)), List(List(List(1), List(1)))))
+      upSplit(List(1), 1) should equal (List(List(List(1)), List(List(List(1), List(1)))))
+      upSplit(List(1), 2) should equal (List(List(List(1)), List(List(List(List(List(1)), List(List(List(1), List(1)))), 
+                                                                       List(List(List(1)), List(List(List(1), List(1))))))))
     }
   }
   describe ("cornerSplit") {
     it ("should return a complicated list of rightSplit and upSplit elements") {
-      cornerSplit(List(1), 1)  should equal (List(List(List(List(1)), List(List(List(1), List(1)))), List(List(List(List(List(1)), List(List(1)))), List(List(1)))))
+      cornerSplit(List(1), 1) should equal (List(List(List(List(1)), List(List(List(1), List(1)))), List(List(List(List(List(1)), List(List(1)))), List(List(1)))))
     }
   }
 }
-splitSpec execute
+splitsSpec execute

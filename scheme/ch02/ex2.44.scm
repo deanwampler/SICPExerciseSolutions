@@ -33,5 +33,7 @@
   (list (list p1) (list p2)))  ; treat first as below second
   
 (check-equal? (right-split 1 1)  (list 1 (list (list 1) (list 1))))
+(check-equal? (right-split 1 2)  (list 1 (list (list (list 1 (list (list 1) (list 1)))) (list (list 1 (list (list 1) (list 1)))))))
 (check-equal? (up-split 1 1)     (list (list 1) (list (list 1 1))))
+(check-equal? (up-split 1 2)     (list (list 1) (list (list (list (list 1) (list (list 1 1))) (list (list 1) (list (list 1 1)))))))
 (check-equal? (corner-split 1 1) (list (list (list 1) (list (list 1 1))) (list (list (list (list 1) (list 1))) (list 1))))
