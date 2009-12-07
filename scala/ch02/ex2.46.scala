@@ -1,20 +1,20 @@
-type vect = Tuple2[Double,Double]
+type Vect = Tuple2[Double,Double]
 
 def makeVect (x:Double, y:Double) = (x, y)
   
-def xcorVect (v:vect) = v._1
+def xcorVect (v:Vect) = v._1
 
-def ycorVect (v:vect) = v._2
+def ycorVect (v:Vect) = v._2
   
-def addVect (v1:vect, v2:vect) =
+def addVect (v1:Vect, v2:Vect) =
   makeVect (xcorVect(v1) + xcorVect(v2),
             ycorVect(v1) + ycorVect(v2))
 
-def subVect (v1:vect, v2:vect) =
+def subVect (v1:Vect, v2:Vect) =
   makeVect (xcorVect(v1) - xcorVect(v2),
             ycorVect(v1) - ycorVect(v2))
 
-def scaleVect (v:vect, factor:Double) =
+def scaleVect (v:Vect, factor:Double) =
   makeVect (factor * xcorVect(v),
             factor * ycorVect(v))
 
