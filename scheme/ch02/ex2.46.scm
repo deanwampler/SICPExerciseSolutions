@@ -15,7 +15,7 @@
   (make-vect (- (xcor-vect v1) (xcor-vect v2))
              (- (ycor-vect v1) (ycor-vect v2))))
 
-(define (scale-vect v factor)
+(define (scale-vect factor v)
   (make-vect (* factor (xcor-vect v))
              (* factor (ycor-vect v))))
 
@@ -26,5 +26,5 @@
 (check-equal? (ycor-vect (add-vect v1 v2)) 9)
 (check-equal? (xcor-vect (sub-vect v1 v2)) -3)
 (check-equal? (ycor-vect (sub-vect v1 v2)) -3)
-(check-equal? (xcor-vect (scale-vect v1 3)) 6)
-(check-equal? (ycor-vect (scale-vect v1 3)) 9)
+(check-equal? (xcor-vect (scale-vect 3 v1)) 6)
+(check-equal? (ycor-vect (scale-vect 3 v1)) 9)
