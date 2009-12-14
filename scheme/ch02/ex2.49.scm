@@ -79,6 +79,7 @@
 (define edge1-2  (make-vect  2 1))
 (define edge2-2  (make-vect -1 1))
 
+(display "outline->painter")(newline)
 (outline->painter (make-frame origin-1 edge1-1 edge2-1))
 (newline)
 (outline->painter (make-frame origin-2 edge1-1 edge2-1))
@@ -88,3 +89,57 @@
 (newline)
 (outline->painter (make-frame origin-2 edge1-2 edge2-2))
 (newline)
+
+; output:
+; ((0 . 0) (1 . 0))((1 . 0) (1 . 1))((1 . 1) (0 . 1))((0 . 1) (0 . 0))
+; ((-1 . 1) (0 . 1))((0 . 1) (0 . 2))((0 . 2) (-1 . 2))((-1 . 2) (-1 . 1))
+; ((0 . 0) (2 . 1))((2 . 1) (1 . 2))((1 . 2) (-1 . 1))((-1 . 1) (0 . 0))
+; ((-1 . 1) (1 . 2))((1 . 2) (0 . 3))((0 . 3) (-2 . 2))((-2 . 2) (-1 . 1))
+
+(define (x->painter frame)
+  (let ((zero-zero-to-one-one (make-segment (make-vect 0 0) (make-vect 1 1)))
+        (one-zero-to-zero-one   (make-segment (make-vect 1 0) (make-vect 0 1))))
+    ((segments->painter (list zero-zero-to-one-one one-zero-to-zero-one)) frame)))
+                            
+(display "x->painter")(newline)
+(x->painter (make-frame origin-1 edge1-1 edge2-1))
+(newline)
+(x->painter (make-frame origin-2 edge1-1 edge2-1))
+(newline)
+
+(x->painter (make-frame origin-1 edge1-2 edge2-2))
+(newline)
+(x->painter (make-frame origin-2 edge1-2 edge2-2))
+(newline)
+
+; output:
+; ((0 . 0) (1 . 1))((1 . 0) (0 . 1))
+; ((-1 . 1) (0 . 2))((0 . 1) (-1 . 2))
+; ((0 . 0) (1 . 2))((2 . 1) (-1 . 1))
+; ((-1 . 1) (0 . 3))((1 . 2) (-2 . 2))
+
+(define (diamond->painter frame)
+  (let ((one   (make-segment (make-vect 0.5 0) (make-vect 1 0.5)))
+        (two   (make-segment (make-vect 1 0.5) (make-vect 0.5 1)))
+        (three (make-segment (make-vect 0.5 1) (make-vect 0 0.5)))
+        (four  (make-segment (make-vect 0 0.5) (make-vect 0.5 0))))
+    ((segments->painter (list one two three four)) frame)))
+                            
+(display "diamond->painter")(newline)
+(diamond->painter (make-frame origin-1 edge1-1 edge2-1))
+(newline)
+(diamond->painter (make-frame origin-2 edge1-1 edge2-1))
+(newline)
+
+(diamond->painter (make-frame origin-1 edge1-2 edge2-2))
+(newline)
+(diamond->painter (make-frame origin-2 edge1-2 edge2-2))
+(newline)
+
+; output:
+; ((0.5 . 0) (1 . 0.5))((1 . 0.5) (0.5 . 1))((0.5 . 1) (0 . 0.5))((0 . 0.5) (0.5 . 0))
+; ((-0.5 . 1) (0 . 1.5))((0 . 1.5) (-0.5 . 2))((-0.5 . 2) (-1 . 1.5))((-1 . 1.5) (-0.5 . 1))
+; ((1.0 . 0.5) (1.5 . 1.5))((1.5 . 1.5) (0.0 . 1.5))((0.0 . 1.5) (-0.5 . 0.5))((-0.5 . 0.5) (1.0 . 0.5))
+; ((0.0 . 1.5) (0.5 . 2.5))((0.5 . 2.5) (-1.0 . 2.5))((-1.0 . 2.5) (-1.5 . 1.5))((-1.5 . 1.5) (0.0 . 1.5))
+
+; skipped d) the wave painter.

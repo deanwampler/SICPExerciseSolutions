@@ -14,7 +14,7 @@ def subVect (v1:Vect, v2:Vect) =
   makeVect (xcorVect(v1) - xcorVect(v2),
             ycorVect(v1) - ycorVect(v2))
 
-def scaleVect (v:Vect, factor:Double) =
+def scaleVect (factor:Double, v:Vect) =
   makeVect (factor * xcorVect(v),
             factor * ycorVect(v))
 
@@ -39,8 +39,8 @@ object vectorSpec extends Spec with ShouldMatchers {
   }
   describe ("scalaVect") {
     it ("should return a new vector with the x and y coordinates scaled by the input factor") {
-      xcorVect(scaleVect(v1, 3)) should equal (6.)
-      ycorVect(scaleVect(v1, 3)) should equal (9.)      
+      xcorVect(scaleVect(3, v1)) should equal (6.)
+      ycorVect(scaleVect(3, v1)) should equal (9.)      
     }
   }
 }  
