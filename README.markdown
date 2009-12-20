@@ -6,23 +6,25 @@ These are solutions for many of the SICP exercises, written in Scheme, Scala, an
 
 Feedback is welcome.
 
-## Makefile ##
+## Running the Solutions ##
 
-There is a simple Makefile that runs all the solutions. However, it appears that failed tests don't return "$? = 1" for all the runtimes (?), so if a particular exercise solution fails, make won't exit.
+There is a simple Makefile that runs all the solutions. However, it appears that failed tests don't return `$? = 1` for all the runtimes (?), so if a particular exercise solution fails, `make` won't exit.
+
+For running individual script files, use the `run.sh` files in each language directory, *e.g.*, if your current directory is `scheme/ch02` and you want to run the Exercise 2.1 solution, then use `../run.sh ex2.1.scm`.
 
 ## Scheme Solutions ##
 
-Most of the Scheme solutions use just the features learned up to that point. The only exceptions are a few exercises where I used output functions and the `(set! ...)` form before the book introduced them, in order to test the results.
+Most of the Scheme solutions use just the features learned up to that point. The only exceptions are a few exercises where I use output functions and the `(set! ...)` form before the book introduced them, in order to test the exercise results.
 
-I used *SchemeUnit* as the XUnit tool and ran the solutions using *PLT Scheme*, in particular the *mzscheme* interpreter. One thing I noticed about this version of scheme; there is no *nil* defined for empty lists, as used in the book.. I used *(list)* instead. 
+I use *SchemeUnit* as the XUnit tool and run the solutions using *PLT Scheme*, in particular the *mzscheme* interpreter. One thing I noticed about this version of scheme; there is no `nil` defined for empty lists, as used in the book.. I used `(list)` instead. 
 
 ## Scala Solutions ##
 
-I'm a self-proclaimed Scala expert: [Programming Scala](http://oreilly.com/catalog/9780596155957/) ;) Hence, some of my solutions used idioms that hadn't yet been introduced in the book. 
+I'm a self-proclaimed Scala expert: [Programming Scala](http://oreilly.com/catalog/9780596155957/) ;) Hence, some of my solutions use idioms that haven't been introduced at that point in the book. 
 
-I used Scala v2.7.5 and [ScalaTest](http://www.artima.com/scalatest/) v0.9.5 to run the solutions. You'll need to add the `scalatest-x.y.z.jar` to the `CLASSPATH`. I invoked `scala` interactively, then loaded and executed files, *e.g.,*
+I use Scala v2.7.X and [ScalaTest](http://www.artima.com/scalatest/) v1.0 to run the solutions. You'll need to add the `scalatest-x.y.jar` to the `CLASSPATH`. I invoke `scala` interactively, then load and execute files, *e.g.,*
 
-    scala -cp $SCALA_TEST_HOME/scalatest-0.9.5/scalatest-0.9.5.jar
+    scala -cp $SCALA_TEST_HOME/scalatest-1.0/scalatest-1.0.jar
     scala> :load ex1.3.scala
     Loading ex1.3.scala...
     f: (Int,Int,Int)Int
@@ -34,19 +36,17 @@ I used Scala v2.7.5 and [ScalaTest](http://www.artima.com/scalatest/) v0.9.5 to 
 
 (I suppressed some of the output.)
 
-Sometimes I defined versions of functions for which JDK implementations already exist, e.g., `abs` (absolute).
+Sometimes I define versions of functions for which JDK implementations already exist, *e.g.*, `abs` (absolute).
 
 ## Clojure Solutions ##
 
 I'm a novice Clojure user, so some of the solutions may be naive!
 
-I used the `clojure.contrib.test-is` package to write the exercises as unit tests. To run them, I invoked the REPL with the `clojure-contrib.jar` in the `CLASSPATH`, loaded each exercise solution into the REPL, then ran it using the following command:
+I switched to the Clojure 1.1 release candidates midstream without difficulty. The exercises probably work fine with 1.0, too. I use the `clojure.test` package that comes with the distribution to write the exercises as unit tests. To run them, I invoke the REPL, load each exercise solution into the REPL, then run it using the following command:
 
     (run-tests)
     
 Note that `(run-tests)` runs *all* the tests that have been defined in the current REPL session, not just test(s) for the last-loaded solution.
-
-**Note**: You must use compatible versions of clojure-contrib and clojure. For example, the latest clojure-contrib on GitHub won't work with clojure 1.0.0. If you have the code examples for Stuart Halloway's *Programming Clojure*, you can use his `bin/repl.sh` script to run my solutions. His distribution includes compatible versions of clojure and clojure-contrib (built around the time of 1.0.0 alpha release), along with other goodies.
 
 As for my Scala solutions, sometimes I define versions of functions for which JDK or Clojure core implementations already exist, e.g., `abs` (absolute) and `even?`.
 

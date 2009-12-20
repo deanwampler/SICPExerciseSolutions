@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 (defn last-pair [l]
   (defn lp [l pair]

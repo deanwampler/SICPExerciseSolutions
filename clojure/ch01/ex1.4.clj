@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch01 (:use clojure.test))
 
 (defn a-plus-abs-b [a b]
   (+ a (if (> b 0) b (- b))))

@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; Use vectors to avoid awkward behavior of "into"
 (defn subsets [s]

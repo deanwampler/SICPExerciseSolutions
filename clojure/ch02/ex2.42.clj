@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; Using vectors because they work better.
 

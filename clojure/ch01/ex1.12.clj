@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch01 (:use clojure.test))
 
 (defn pascals-triangle [row col]
   (cond (= col 1) 1

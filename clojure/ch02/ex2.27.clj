@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; reverse is already defined:
 (defn reverse2 [l]

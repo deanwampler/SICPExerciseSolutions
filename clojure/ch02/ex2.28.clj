@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; This implementation using lists is awkward, due to the way "into" works. It's
 ; more straight forward if vectors are used.

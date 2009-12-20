@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; I'm going to use vectors for this exercise.
 (defn make-mobile [left right] 

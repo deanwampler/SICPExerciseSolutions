@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch01 (:use clojure.test))
 
 ; The original implementation in the book:
 

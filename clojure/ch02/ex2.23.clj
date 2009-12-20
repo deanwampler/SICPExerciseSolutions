@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; Version suggested on the clojure mailing list by Brian Hurt.
 (defn for-each [f items]

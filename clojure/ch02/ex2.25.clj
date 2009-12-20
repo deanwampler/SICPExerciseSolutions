@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 (deftest first-rest-test
   (is (= (first (rest (first (rest (rest (list 1 3 (list 5 7) 9)))))) 7))

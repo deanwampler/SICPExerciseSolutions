@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch01 (:use clojure.test))
 
 (defn accumulate [combiner null_value term a next b]
   (if (> a b) null_value 

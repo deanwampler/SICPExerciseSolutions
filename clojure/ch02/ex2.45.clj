@@ -1,4 +1,4 @@
-(ns sicp.ch02 (:use clojure.contrib.test-is))
+(ns sicp.ch02 (:use clojure.test))
 
 ; For testing purposes, we'll just use a vector of an arbitrary element for "painter":
 ; To distinguish beside from below, use a vector of two elements for beside and a

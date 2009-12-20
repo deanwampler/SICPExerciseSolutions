@@ -1,5 +1,5 @@
 ; Newton's Method for Cubes, using the approach in 1.7.
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch01 (:use clojure.test))
 
 (defn cube [x] (* x x x))
 

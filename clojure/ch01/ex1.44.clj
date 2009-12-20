@@ -1,4 +1,4 @@
-(ns sicp.ch01 (:use clojure.contrib.test-is))
+(ns sicp.ch01 (:use clojure.test))
 
 (defn smooth [f dx]
   (fn [x] (/ (+ (f (- x dx)) (f x) (f (+ x dx))) 3)))
