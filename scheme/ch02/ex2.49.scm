@@ -46,7 +46,6 @@
 (define output (open-output-string))
 (define (draw-line start end)
   (display (list start end) output))
-
  
 
 (define (frame-coord-map frame)
