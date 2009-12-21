@@ -40,8 +40,10 @@ def edge1Frame (frame:Frame) = frame._2
 
 def edge2Frame (frame:Frame) = frame._3
 
-// For the exercise, drawLine prints the pair of the line ends.
-def drawLine (start: Vect, end: Vect) = print(start, end)
+// For the exercise, drawLine appens the pair of the line ends to a string.
+var output = ""
+def drawLine (start: Vect, end: Vect) = output += "(" + start + "," + end + ")"
+def resetOutput = output = ""
 
 def frameCoordMap (frame: Frame) = (v: Vect) =>
   addVect(
@@ -72,22 +74,28 @@ val origin2 = makeVect(-1, 1)
 val edge12  = makeVect( 2, 1)
 val edge22  = makeVect(-1, 1)
 
-println ("outlinePainter")
-outlinePainter (makeFrame (origin1, edge11, edge21))
-println
-outlinePainter (makeFrame (origin2, edge11, edge21))
-println
+import org.scalatest._ 
+import org.scalatest.matchers._
 
-outlinePainter (makeFrame (origin1, edge12, edge22))
-println
-outlinePainter (makeFrame (origin2, edge12, edge22))
-println
-
-// output:
-// ((0.0,0.0),(1.0,0.0))((1.0,0.0),(1.0,1.0))((1.0,1.0),(0.0,1.0))((0.0,1.0),(0.0,0.0))
-// ((-1.0,1.0),(0.0,1.0))((0.0,1.0),(0.0,2.0))((0.0,2.0),(-1.0,2.0))((-1.0,2.0),(-1.0,1.0))
-// ((0.0,0.0),(2.0,1.0))((2.0,1.0),(1.0,2.0))((1.0,2.0),(-1.0,1.0))((-1.0,1.0),(0.0,0.0))
-// ((-1.0,1.0),(1.0,2.0))((1.0,2.0),(0.0,3.0))((0.0,3.0),(-2.0,2.0))((-2.0,2.0),(-1.0,1.0))
+object outlinePainterSpec extends Spec with ShouldMatchers {
+  describe ("outlinePainter") {
+    it ("should trace the corners of the frame") {
+      outlinePainter (makeFrame (origin1, edge11, edge21))
+      output should equal ("((0.0,0.0),(1.0,0.0))((1.0,0.0),(1.0,1.0))((1.0,1.0),(0.0,1.0))((0.0,1.0),(0.0,0.0))")
+      resetOutput
+      outlinePainter (makeFrame (origin2, edge11, edge21))
+      output should equal ("((-1.0,1.0),(0.0,1.0))((0.0,1.0),(0.0,2.0))((0.0,2.0),(-1.0,2.0))((-1.0,2.0),(-1.0,1.0))")
+      resetOutput
+      outlinePainter (makeFrame (origin1, edge12, edge22))
+      output should equal ("((0.0,0.0),(2.0,1.0))((2.0,1.0),(1.0,2.0))((1.0,2.0),(-1.0,1.0))((-1.0,1.0),(0.0,0.0))")
+      resetOutput
+      outlinePainter (makeFrame (origin2, edge12, edge22))
+      output should equal ("((-1.0,1.0),(1.0,2.0))((1.0,2.0),(0.0,3.0))((0.0,3.0),(-2.0,2.0))((-2.0,2.0),(-1.0,1.0))")
+      resetOutput
+    }
+  }
+}
+outlinePainterSpec execute
 
 def xPainter (frame: Frame) = {
   val zeroZeroToOneOne = makeSegment (makeVect(0, 0), makeVect(1, 1))
@@ -95,22 +103,25 @@ def xPainter (frame: Frame) = {
   segmentsPainter (zeroZeroToOneOne :: oneZeroToZeroOne :: Nil) (frame)
 }
                             
-println ("xPainter")
-xPainter (makeFrame (origin1, edge11, edge21))
-println
-xPainter (makeFrame (origin2, edge11, edge21))
-println
-
-xPainter (makeFrame (origin1, edge12, edge22))
-println
-xPainter (makeFrame (origin2, edge12, edge22))
-println
-
-// output:
-// ((0.0,0.0),(1.0,1.0))((1.0,0.0),(0.0,1.0))
-// ((-1.0,1.0),(0.0,2.0))((0.0,1.0),(-1.0,2.0))
-// ((0.0,0.0),(1.0,2.0))((2.0,1.0),(-1.0,1.0))
-// ((-1.0,1.0),(0.0,3.0))((1.0,2.0),(-2.0,2.0))
+object xPainterSpec extends Spec with ShouldMatchers {
+  describe ("xPainter") {
+    it ("should trace an 'x' between the corners of the frame") {
+      xPainter (makeFrame (origin1, edge11, edge21))
+      output should equal ("((0.0,0.0),(1.0,1.0))((1.0,0.0),(0.0,1.0))")
+      resetOutput
+      xPainter (makeFrame (origin2, edge11, edge21))
+      output should equal ("((-1.0,1.0),(0.0,2.0))((0.0,1.0),(-1.0,2.0))")
+      resetOutput
+      xPainter (makeFrame (origin1, edge12, edge22))
+      output should equal ("((0.0,0.0),(1.0,2.0))((2.0,1.0),(-1.0,1.0))")
+      resetOutput
+      xPainter (makeFrame (origin2, edge12, edge22))
+      output should equal ("((-1.0,1.0),(0.0,3.0))((1.0,2.0),(-2.0,2.0))")
+      resetOutput
+    }
+  }
+}
+xPainterSpec execute
 
 def diamondPainter (frame: Frame) = {
   val one   = makeSegment (makeVect(0.5, 0), makeVect(1, 0.5))
@@ -120,18 +131,25 @@ def diamondPainter (frame: Frame) = {
   segmentsPainter (one :: two :: three :: four :: Nil) (frame)
 }
                             
-println ("diamondPainter")
-diamondPainter (makeFrame (origin1, edge11, edge21))
-println
-diamondPainter (makeFrame (origin2, edge11, edge21))
-println
-
-diamondPainter (makeFrame (origin1, edge12, edge22))
-println
-diamondPainter (makeFrame (origin2, edge12, edge22))
-println
-
-// output:
+object diamondPainterSpec extends Spec with ShouldMatchers {
+  describe ("diamondPainter") {
+    it ("should trace a diamond in the frame") {
+      diamondPainter (makeFrame (origin1, edge11, edge21))
+      output should equal ("((0.5,0.0),(1.0,0.5))((1.0,0.5),(0.5,1.0))((0.5,1.0),(0.0,0.5))((0.0,0.5),(0.5,0.0))")
+      resetOutput
+      diamondPainter (makeFrame (origin2, edge11, edge21))
+      output should equal ("((-0.5,1.0),(0.0,1.5))((0.0,1.5),(-0.5,2.0))((-0.5,2.0),(-1.0,1.5))((-1.0,1.5),(-0.5,1.0))")
+      resetOutput
+      diamondPainter (makeFrame (origin1, edge12, edge22))
+      output should equal ("((1.0,0.5),(1.5,1.5))((1.5,1.5),(0.0,1.5))((0.0,1.5),(-0.5,0.5))((-0.5,0.5),(1.0,0.5))")
+      resetOutput
+      diamondPainter (makeFrame (origin2, edge12, edge22))
+      output should equal ("((0.0,1.5),(0.5,2.5))((0.5,2.5),(-1.0,2.5))((-1.0,2.5),(-1.5,1.5))((-1.5,1.5),(0.0,1.5))")
+      resetOutput
+    }
+  }
+}
+diamondPainterSpec execute
 // ((0.5,0.0),(1.0,0.5))((1.0,0.5),(0.5,1.0))((0.5,1.0),(0.0,0.5))((0.0,0.5),(0.5,0.0))
 // ((-0.5,1.0),(0.0,1.5))((0.0,1.5),(-0.5,2.0))((-0.5,2.0),(-1.0,1.5))((-1.0,1.5),(-0.5,1.0))
 // ((1.0,0.5),(1.5,1.5))((1.5,1.5),(0.0,1.5))((0.0,1.5),(-0.5,0.5))((-0.5,0.5),(1.0,0.5))
