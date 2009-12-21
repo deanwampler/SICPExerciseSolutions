@@ -41,9 +41,16 @@
   (caddr frame))
 
 ; For the exercise, draw-line prints a list of the line ends.
+;(define (draw-line start end)
+;  (display (list start end)))
+ 
+; For the exercise, draw-line appends the line ends to a string.
+(define output (open-output-string))
+
 (define (draw-line start end)
-  (display (list start end)))
-  
+  (display (list start end) output))
+
+ 
 
 (define (frame-coord-map frame)
   (lambda (v)
@@ -79,44 +86,39 @@
 (define edge1-2  (make-vect  2 1))
 (define edge2-2  (make-vect -1 1))
 
-(display "outline->painter")(newline)
 (outline->painter (make-frame origin-1 edge1-1 edge2-1))
-(newline)
+(check-equal? #"((0 . 0) (1 . 0))((1 . 0) (1 . 1))((1 . 1) (0 . 1))((0 . 1) (0 . 0))"
+              (get-output-bytes output #t))
 (outline->painter (make-frame origin-2 edge1-1 edge2-1))
-(newline)
+(check-equal? #"((-1 . 1) (0 . 1))((0 . 1) (0 . 2))((0 . 2) (-1 . 2))((-1 . 2) (-1 . 1))"
+              (get-output-bytes output #t))
 
 (outline->painter (make-frame origin-1 edge1-2 edge2-2))
-(newline)
+(check-equal? #"((0 . 0) (2 . 1))((2 . 1) (1 . 2))((1 . 2) (-1 . 1))((-1 . 1) (0 . 0))"
+              (get-output-bytes output #t))
 (outline->painter (make-frame origin-2 edge1-2 edge2-2))
-(newline)
+(check-equal? #"((-1 . 1) (1 . 2))((1 . 2) (0 . 3))((0 . 3) (-2 . 2))((-2 . 2) (-1 . 1))"
+              (get-output-bytes output #t))
 
-; output:
-; ((0 . 0) (1 . 0))((1 . 0) (1 . 1))((1 . 1) (0 . 1))((0 . 1) (0 . 0))
-; ((-1 . 1) (0 . 1))((0 . 1) (0 . 2))((0 . 2) (-1 . 2))((-1 . 2) (-1 . 1))
-; ((0 . 0) (2 . 1))((2 . 1) (1 . 2))((1 . 2) (-1 . 1))((-1 . 1) (0 . 0))
-; ((-1 . 1) (1 . 2))((1 . 2) (0 . 3))((0 . 3) (-2 . 2))((-2 . 2) (-1 . 1))
 
 (define (x->painter frame)
   (let ((zero-zero-to-one-one (make-segment (make-vect 0 0) (make-vect 1 1)))
         (one-zero-to-zero-one   (make-segment (make-vect 1 0) (make-vect 0 1))))
     ((segments->painter (list zero-zero-to-one-one one-zero-to-zero-one)) frame)))
                             
-(display "x->painter")(newline)
 (x->painter (make-frame origin-1 edge1-1 edge2-1))
-(newline)
+(check-equal? #"((0 . 0) (1 . 1))((1 . 0) (0 . 1))"
+              (get-output-bytes output #t))
 (x->painter (make-frame origin-2 edge1-1 edge2-1))
-(newline)
+(check-equal? #"((-1 . 1) (0 . 2))((0 . 1) (-1 . 2))"
+              (get-output-bytes output #t))
 
 (x->painter (make-frame origin-1 edge1-2 edge2-2))
-(newline)
+(check-equal? #"((0 . 0) (1 . 2))((2 . 1) (-1 . 1))"
+              (get-output-bytes output #t))
 (x->painter (make-frame origin-2 edge1-2 edge2-2))
-(newline)
-
-; output:
-; ((0 . 0) (1 . 1))((1 . 0) (0 . 1))
-; ((-1 . 1) (0 . 2))((0 . 1) (-1 . 2))
-; ((0 . 0) (1 . 2))((2 . 1) (-1 . 1))
-; ((-1 . 1) (0 . 3))((1 . 2) (-2 . 2))
+(check-equal? #"((-1 . 1) (0 . 3))((1 . 2) (-2 . 2))"
+              (get-output-bytes output #t))
 
 (define (diamond->painter frame)
   (let ((one   (make-segment (make-vect 0.5 0) (make-vect 1 0.5)))
@@ -125,21 +127,18 @@
         (four  (make-segment (make-vect 0 0.5) (make-vect 0.5 0))))
     ((segments->painter (list one two three four)) frame)))
                             
-(display "diamond->painter")(newline)
 (diamond->painter (make-frame origin-1 edge1-1 edge2-1))
-(newline)
+(check-equal? #"((0.5 . 0) (1 . 0.5))((1 . 0.5) (0.5 . 1))((0.5 . 1) (0 . 0.5))((0 . 0.5) (0.5 . 0))"
+              (get-output-bytes output #t))
 (diamond->painter (make-frame origin-2 edge1-1 edge2-1))
-(newline)
+(check-equal? #"((-0.5 . 1) (0 . 1.5))((0 . 1.5) (-0.5 . 2))((-0.5 . 2) (-1 . 1.5))((-1 . 1.5) (-0.5 . 1))"
+              (get-output-bytes output #t))
 
 (diamond->painter (make-frame origin-1 edge1-2 edge2-2))
-(newline)
+(check-equal? #"((1.0 . 0.5) (1.5 . 1.5))((1.5 . 1.5) (0.0 . 1.5))((0.0 . 1.5) (-0.5 . 0.5))((-0.5 . 0.5) (1.0 . 0.5))"
+              (get-output-bytes output #t))
 (diamond->painter (make-frame origin-2 edge1-2 edge2-2))
-(newline)
-
-; output:
-; ((0.5 . 0) (1 . 0.5))((1 . 0.5) (0.5 . 1))((0.5 . 1) (0 . 0.5))((0 . 0.5) (0.5 . 0))
-; ((-0.5 . 1) (0 . 1.5))((0 . 1.5) (-0.5 . 2))((-0.5 . 2) (-1 . 1.5))((-1 . 1.5) (-0.5 . 1))
-; ((1.0 . 0.5) (1.5 . 1.5))((1.5 . 1.5) (0.0 . 1.5))((0.0 . 1.5) (-0.5 . 0.5))((-0.5 . 0.5) (1.0 . 0.5))
-; ((0.0 . 1.5) (0.5 . 2.5))((0.5 . 2.5) (-1.0 . 2.5))((-1.0 . 2.5) (-1.5 . 1.5))((-1.5 . 1.5) (0.0 . 1.5))
+(check-equal? #"((0.0 . 1.5) (0.5 . 2.5))((0.5 . 2.5) (-1.0 . 2.5))((-1.0 . 2.5) (-1.5 . 1.5))((-1.5 . 1.5) (0.0 . 1.5))"
+              (get-output-bytes output #t))
 
 ; skipped d) the wave painter.
