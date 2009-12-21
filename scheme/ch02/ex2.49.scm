@@ -40,13 +40,14 @@
 (define (edge2-frame frame)
   (caddr frame))
 
-; For the exercise, draw-line prints a list of the line ends.
+; For the exercise, draw-line prints a list of the line end points.
 ;(define (draw-line start end)
 ;  (display (list start end)))
  
-; For the exercise, draw-line appends the line ends to a string.
+; For the exercise, draw-line appends the line end points to a string
+; using the "open-output-string" method.
+; (see http://docs.plt-scheme.org/reference/stringport.html)
 (define output (open-output-string))
-
 (define (draw-line start end)
   (display (list start end) output))
 
