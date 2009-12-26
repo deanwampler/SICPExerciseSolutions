@@ -11,35 +11,38 @@
 (defn sum? [e]
   (and (list? e) (= (first e) '+)))
   
-(defn addend [e] (nth e 1))
-  
-(defn augend [e] (nth e 2))
-  
 (defn make-sum [a1 a2]
   (cond (=number? a1 0) a2
         (=number? a2 0) a1
         (and (number? a1) (number? a2)) (+ a1 a2)
         :else (list '+ a1 a2)))
   
+(defn rest-of-operands [e op]
+  (loop [exp (rest (rest (rest e))) total (nth e 2)]
+    (cond (empty? exp) total
+          :else (recur (rest exp) (op total (first exp))))))
+  
+(defn addend [e] (nth e 1))
+
+(defn augend [e] (rest-of-operands e make-sum))
+  
 (defn difference? [e]
   (and (list? e) (= (first e) '-)))
 
-(defn minuend [e] (nth e 1))
-  
-(defn subtrahend [e] (nth e 2))
-  
 (defn make-difference [a1 a2] 
   (cond (and (number? a1) (number? a2)) (- a1 a2)
         (=number? a1 0) (list '- 0 a2)
         (=number? a2 0) a1
         :else (list '- a1 a2)))
   
+(defn minuend [e] (nth e 1))
+  
+; Since all the subtrahend expressions are subtraced from the minuend, we use
+; make-sum to compute them. i.e., (- x1 x2 x3 ...) => (- x1 (+ x2 x3 ...))
+(defn subtrahend [e] (rest-of-operands e make-sum))
+  
 (defn product? [e]
   (and (list? e) (= (first e) '*)))
-  
-(defn multiplier [e] (nth e 1))
-  
-(defn multiplicand [e] (nth e 2))
   
 (defn make-product [a1 a2] 
   (cond (or (=number? a1 0) (=number? a2 0)) 0
@@ -48,12 +51,12 @@
         (and (number? a1) (number? a2)) (* a1 a2)
         :else (list '* a1 a2)))
 
+(defn multiplier [e] (nth e 1))
+  
+(defn multiplicand [e] (rest-of-operands e make-product))
+  
 (defn exponentiation? [e]
   (and (list? e) (= (first e) '**)))
-  
-(defn base [e] (nth e 1))
-  
-(defn exponent [e] (nth e 2))
   
 (defn make-exponentiation [a1 a2] 
   (cond (=number? a1 0) 0
@@ -62,6 +65,11 @@
         (and (number? a1) (number? a2)) (* a1 (make-exponentiation a1 (- a2 1)))
         :else (list '** a1 a2)))
 
+(defn base [e] (nth e 1))
+  
+; We multiple the exponents
+(defn exponent [e] (rest-of-operands e make-product))
+  
 (defn deriv [exp var]
   (cond (number? exp) 0
         (variable? exp)
@@ -88,18 +96,21 @@
           (throw (RuntimeException. (format "unknown expression type -- DERIV: %s" exp)))))
 
 (deftest test-deriv          
-  (is (=  1 (make-exponentiation 2 0)))
-  (is (=  2 (make-exponentiation 2 1)))
-  (is (=  4 (make-exponentiation 2 2)))
-  (is (=  8 (make-exponentiation 2 3)))
-  (is (= 16 (make-exponentiation 2 4)))
   (is (=  1 (deriv '(+ x 3) 'x)))
+  (is (=  1 (deriv '(+ x 3 4) 'x)))
+  (is (=  2 (deriv '(+ x x 3) 'x)))
   (is (=  1 (deriv '(- x 3) 'x)))
+  (is (=  0 (deriv '(- x x 3) 'x)))
+  (is (= -2 (deriv '(- x x x x 3) 'x)))
   (is (= 'y (deriv '(* x y) 'x)))
+  (is (= '(+ (* x y) (* x y)) (deriv '(* x x y) 'x))) ; = '(* 2 x y)
   (is (= '(+ (* x y) (* y (+ x 3))) (deriv '(* (* x y) (+ x 3)) 'x)))
+  (is (= '(+ (* x y) (* y (+ x 3))) (deriv '(* x y (+ x 3)) 'x)))
   (is (= '(+ (* x y) (* y (- x 3))) (deriv '(* (* x y) (- x 3)) 'x)))
+  (is (= '(+ (* x y) (* y (- x 3))) (deriv '(* x y (- x 3)) 'x)))
   (is (= 1 (deriv '(** x 1) 'x)))
   (is (= '(* 2 x) (deriv '(** x 2) 'x)))
+  (is (= '(* 6 (** x 5)) (deriv '(** x 2 3) 'x)))
   (is (= '(* 3 (** x 2)) (deriv '(** x 3) 'x)))
   (is (= '(* 4 (** x 3)) (deriv '(** x 4) 'x)))
   (is (= '(* n (** x (- n 1))) (deriv '(** x n) 'x))))

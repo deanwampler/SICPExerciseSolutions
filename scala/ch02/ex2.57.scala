@@ -1,4 +1,4 @@
-// Ex 2.56
+// Ex 2.57
 // Represents expressions as lists of variables (Strings), numbers (Ints), and
 // other expressions (List[Any]'s). 
 
@@ -65,10 +65,17 @@ def isSum (exp: Expression) = isArithmeticExpression(exp, "+")
 private def extractFirstArg (exp: Expression) = toExpr(exp.tail.head)
 
 // Assumes the expression contains at least two arguments/operands
-private def extractSecondArg(exp: Expression) = toExpr(exp.tail.tail.head) 
-
+private def extractRestOfArgs(
+    exp: Expression, op: (Expression, Expression) => Expression) = {
+  def rest(exp2: Expression, total: Expression): Expression = exp2 match {
+    case Nil => total
+    case head::tail => rest(tail, op(total, toExpr(head)))
+  }
+  rest(exp.tail.tail.tail, toExpr(exp.tail.tail.head))
+}
+  
 def addend (exp: Expression) = extractFirstArg(exp)
-def augend (exp: Expression) = extractSecondArg(exp)
+def augend (exp: Expression) = extractRestOfArgs(exp, makeSum)
 
 def makeSum (exp1: Expression, exp2: Expression) =
   if      (numberEq(exp1, Zero)) exp2
@@ -81,7 +88,8 @@ def makeSum (exp1: Expression, exp2: Expression) =
 def isDifference (exp: Expression) = isArithmeticExpression(exp, "-")
 
 def minuend (exp: Expression) = extractFirstArg(exp)
-def subtrahend (exp: Expression) = extractSecondArg(exp)
+// (- x1 x2 x3 ...) => (- x1 (+ x2 x3 ...))
+def subtrahend (exp: Expression) = extractRestOfArgs(exp, makeSum)
   
 def makeDifference (exp1: Expression, exp2: Expression) =
   if      (isNumber(exp1) && isNumber(exp2)) 
@@ -95,7 +103,7 @@ def makeDifference (exp1: Expression, exp2: Expression) =
 def isProduct (exp: Expression) = isArithmeticExpression(exp, "*")
 
 def multiplier (exp: Expression) = extractFirstArg(exp)  
-def multiplicand (exp: Expression) = extractSecondArg(exp)
+def multiplicand (exp: Expression) = extractRestOfArgs(exp, makeProduct)
   
 def makeProduct (exp1: Expression, exp2: Expression) =
   if      (numberEq(exp1, Zero) || numberEq(exp2, Zero)) ZeroExpr
@@ -109,7 +117,8 @@ def makeProduct (exp1: Expression, exp2: Expression) =
 def isExponentiation (exp: Expression) = isArithmeticExpression(exp, "**")
   
 def base (exp: Expression) = extractFirstArg(exp)  
-def exponent (exp: Expression) = extractSecondArg(exp)
+// Exponents are multipled together.
+def exponent (exp: Expression) = extractRestOfArgs(exp, makeProduct)
   
 private def calcNumberExponential(base: Number, exponent: Number): Number =
   exponent match {
@@ -206,41 +215,46 @@ object derivSpec extends Spec with ShouldMatchers {
   def testMakeExponentiation(n1:Number, n2:Number, expected:Number) = 
     makeExponentiation (toExpr(n1), toExpr(n2)) should equal (toExpr(expected))
     
-  describe ("makeExponentiation") {
-    it ("should compute the correct expontential expressions") {
-      testMakeExponentiation (2, 0, 1)
-      testMakeExponentiation (2, 1, 2)
-      testMakeExponentiation (2, 2, 4)
-      testMakeExponentiation (2, 3, 8)
-      testMakeExponentiation (2, 4, 16)
-    }
-  }
   describe ("expressionParser") {
     it ("should parse expression strings into list trees") {
       expressionStringToExpression("1")  should equal (List(1))
       expressionStringToExpression("x")  should equal (List("x"))
       expressionStringToExpression("(+  1 2)")  should equal (List("+",  1, 2))
+      expressionStringToExpression("(+  1 2 3 4)")  should equal (List("+",  1, 2, 3, 4))
       expressionStringToExpression("(-  1 2)")  should equal (List("-",  1, 2))
+      expressionStringToExpression("(-  1 2 3 4)")  should equal (List("-",  1, 2, 3, 4))
       expressionStringToExpression("(*  1 2)")  should equal (List("*",  1, 2))
+      expressionStringToExpression("(*  1 2 3 4)")  should equal (List("*",  1, 2, 3, 4))
       expressionStringToExpression("(** 1 2)")  should equal (List("**", 1, 2))
+      expressionStringToExpression("(** 1 2 3 4)")  should equal (List("**", 1, 2, 3, 4))
       expressionStringToExpression("(+ x 3)") should equal (List("+", "x", 3))
+      expressionStringToExpression("(+ x y z 3)") should equal (List("+", "x", "y", "z", 3))
       expressionStringToExpression("(* (* x y) (- x 3))") should equal (
         List("*", List("*", "x", "y"), List("-", "x", 3)))
+      expressionStringToExpression("(* x y (- x 3))") should equal (
+        List("*", "x", "y", List("-", "x", 3)))
     }
   }
   describe ("deriv") {
     it ("should compute the correct differentation expressions") {
       deriv ("(+ x 3)", "x") should equal ("1")
-      deriv ("(- x 3)", "x") should equal ("1")
-      deriv ("(* x y)", "x") should equal ("y")
-      deriv ("(* (* x y) (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
-      deriv ("(* (* x y) (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
-      
-      deriv ("(** x 1)", "x") should equal ("1")
-      deriv ("(** x 2)", "x") should equal ("(* 2 x)")
-      deriv ("(** x 3)", "x") should equal ("(* 3 (** x 2))")
-      deriv ("(** x 4)", "x") should equal ("(* 4 (** x 3))")
-      deriv ("(** x n)", "x") should equal ("(* n (** x (- n 1)))")
+      deriv ("(+ x x 3)", "x") should equal ("2")
+      // deriv ("(- x 3)", "x") should equal ("1")
+      // deriv ("(- x x 3)", "x") should equal ("0")
+      // deriv ("(- x x x x 3)", "x") should equal ("-2")
+      // deriv ("(* x y)", "x") should equal ("y")
+      // deriv ("(* x x y)", "x") should equal ("(+ (* x y) (* x y))")
+      // deriv ("(* (* x y) (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
+      // deriv ("(* x y (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
+      // deriv ("(* (* x y) (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
+      // deriv ("(* x y (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
+      // 
+      // deriv ("(** x 1)", "x") should equal ("1")
+      // deriv ("(** x 2)", "x") should equal ("(* 2 x)")
+      // deriv ("(** x 2 3)", "x") should equal ("(* 6 (** x 5)")
+      // deriv ("(** x 3)", "x") should equal ("(* 3 (** x 2))")
+      // deriv ("(** x 4)", "x") should equal ("(* 4 (** x 3))")
+      // deriv ("(** x n)", "x") should equal ("(* n (** x (- n 1)))")
     }
   }
 }
