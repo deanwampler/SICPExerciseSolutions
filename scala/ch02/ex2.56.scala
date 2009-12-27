@@ -1,6 +1,9 @@
 // Ex 2.56
 // Represents expressions as lists of variables (Strings), numbers (Ints), and
 // other expressions (List[Any]'s). 
+// This version follows closely the Scheme and Clojure versions (which reflect
+// the book...). Contrast with ex2.56.v2, which uses more idiomatic Scala, e.g.,
+// objects.
 
 type Expression = List[Any]
 type Variable = String

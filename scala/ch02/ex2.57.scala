@@ -212,9 +212,6 @@ import org.scalatest._
 import org.scalatest.matchers._
 
 object derivSpec extends Spec with ShouldMatchers {
-  def testMakeExponentiation(n1:Number, n2:Number, expected:Number) = 
-    makeExponentiation (toExpr(n1), toExpr(n2)) should equal (toExpr(expected))
-    
   describe ("expressionParser") {
     it ("should parse expression strings into list trees") {
       expressionStringToExpression("1")  should equal (List(1))
