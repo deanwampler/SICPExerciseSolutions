@@ -2,8 +2,8 @@
 // This version uses more idiomatic Scala, e.g., objects. Contrast with 
 // ex2.56.scala, which follows closely the Scheme and Clojure versions (which
 // reflect the book...). 
-// This version uses types more extensively. One benefit is the elimination of
-// "throws" clauses for invalid cases.
+// This version uses types more extensively. One benefit is the reduction of
+// "throws" clauses for invalid cases, most of which can be eliminated.
 
 case class Variable(name: String) {
   override def toString = name
@@ -17,15 +17,13 @@ case class Number(value: Int) {
   def -  (other: Number) = new Number(value - other.value)
   def *  (other: Number) = new Number(value * other.value)
   def ** (other: Number) = new Number(power(value, other.value))
+  def unary_- = new Number(-value)
   
   protected def power(base:Int, exp:Int):Int = exp match {
     case 0 => 1
     case 1 => base
     case _ => base * power(base, exp - 1)
   }
-}
-object Number {
-  def apply(s:String) = new Number(Integer.parseInt(s))
 }
 
 sealed abstract case class Expression(terms : Expression*) {
@@ -40,10 +38,6 @@ sealed abstract case class Expression(terms : Expression*) {
 
 sealed abstract class Operator(val symbol:String) extends Expression {
   override def toString = symbol 
-  override def equals(other: Any) = other match {
-    case o:Operator => symbol == o.symbol
-    case _ => false
-  }
 }
 
 sealed abstract class Term extends Expression
@@ -52,6 +46,7 @@ case class VariableExpression(variable: Variable) extends Term {
   override def toString = variable.toString
 }
 object VariableExpression {
+  // Add a second apply method, for string arguments
   def apply(s: String) = new VariableExpression(Variable(s))
 }
 
@@ -59,6 +54,7 @@ case class NumberExpression(number: Number) extends Term {
   override def toString = number.toString
 }
 object NumberExpression {
+  // Add a second apply method, for integer arguments
   def apply(i: Int) = new NumberExpression(Number(i))
 }
 
@@ -71,62 +67,69 @@ abstract class ArithmeticExpression(
 // We don't use case classes for the arithmetic expressions so we can 
 // define our own apply methods. Unfortunately, this means reproducing other
 // boilerplate, like conventional unapply methods.
+// Also, the companion objects extend Function2 so we can abstract over their
+// apply methods in the parser below.
 
 class Sum(val addend: Expression, val augend: Expression)
     extends ArithmeticExpression(Sum.Plus, addend, augend) {
 }
-object Sum {
+object Sum extends Function2[Expression,Expression,Expression] {
   case object Plus extends Operator("+") 
 
-  def apply(leftOp: Expression, rightOp: Expression) = leftOp match {
-    case ZeroExpr => rightOp
-    case NumberExpression(n1) => rightOp match {
-      case ZeroExpr => leftOp
+  def apply(addend: Expression, augend: Expression) = addend match {
+    case ZeroExpr => augend
+    case NumberExpression(n1) => augend match {
+      case ZeroExpr => addend
       case NumberExpression(n2) => NumberExpression(n1 + n2)
-      case _ => new Sum(leftOp, rightOp)
+      case _ => new Sum(addend, augend)
     }
-    case _ => new Sum(leftOp, rightOp)
+    case _ => new Sum(addend, augend)
   }
-
+  
   def unapply(sum: Sum) = Some((sum.addend, sum.augend))
 }
+
 
 class Difference(val minuend: Expression, val subtrahend: Expression) 
     extends ArithmeticExpression(Difference.Minus, minuend, subtrahend) {
 }
-object Difference {
+object Difference extends Function2[Expression,Expression,Expression] {
   case object Minus extends Operator("-") 
 
-  def apply(leftOp: Expression, rightOp: Expression) = leftOp match {
-    case ZeroExpr => new Difference(leftOp, rightOp)
-    case NumberExpression(n1) => rightOp match {
-      case ZeroExpr => leftOp
-      case NumberExpression(n2) => NumberExpression(n1 - n2)
-      case _ => new Difference(leftOp, rightOp)
+  def apply(minuend: Expression, subtrahend: Expression) = minuend match {
+    case ZeroExpr => subtrahend match {
+      case NumberExpression(n2) => NumberExpression(-n2)
+      case _ => new Difference(ZeroExpr, subtrahend) // TODO, handle negative expressions properly.
     }
-    case _ => new Difference(leftOp, rightOp)
+    case NumberExpression(n1) => subtrahend match {
+      case ZeroExpr => minuend
+      case NumberExpression(n2) => NumberExpression(n1 - n2)
+      case _ => new Difference(minuend, subtrahend)
+    }
+    case _ => new Difference(minuend, subtrahend)
   }
 
   def unapply(diff: Difference) = Some((diff.minuend, diff.subtrahend))
 }
 
+
 class Product(val multiplier: Expression, val multiplicand: Expression) 
     extends ArithmeticExpression(Product.Times, multiplier, multiplicand) {
 }
-object Product {
+object Product extends Function2[Expression,Expression,Expression] {
   case object Times extends Operator("*") 
 
-  def apply(leftOp: Expression, rightOp: Expression) = 
-    if      (leftOp == ZeroExpr || rightOp == ZeroExpr) ZeroExpr
-    else if (leftOp == OneExpr)  rightOp
-    else if (rightOp == OneExpr) leftOp
+  def apply(multiplier: Expression, multiplicand: Expression) = 
+    if      (multiplier == ZeroExpr || multiplicand == ZeroExpr) ZeroExpr
+    else if (multiplier == OneExpr) multiplicand
+    else if (multiplicand == OneExpr) multiplier
     else {
-      leftOp match {
-        case NumberExpression(n1) => rightOp match {
+      multiplier match {
+        case NumberExpression(n1) => multiplicand match {
           case NumberExpression(n2) => NumberExpression(n1 * n2)
-          case _ => new Product(leftOp, rightOp)
+          case _ => new Product(multiplier, multiplicand)
         }
-        case _ => new Product(leftOp, rightOp)
+        case _ => new Product(multiplier, multiplicand)
       }
     }
 
@@ -136,26 +139,54 @@ object Product {
 class Exponentiation(val base: Expression, val exponent: Expression)
   extends ArithmeticExpression(Exponentiation.Exponent, base, exponent) {
 }
-object Exponentiation {
+object Exponentiation extends Function2[Expression,Expression,Expression] {
   case object Exponent extends Operator("**") 
 
-  def apply(leftOp: Expression, rightOp: Expression) = 
-    if      (leftOp == ZeroExpr) ZeroExpr
-    else if (rightOp == ZeroExpr) OneExpr
-    else if (rightOp == OneExpr)  leftOp
+  def apply(base: Expression, exponent: Expression) = 
+    if      (base == ZeroExpr) ZeroExpr
+    else if (exponent == ZeroExpr) OneExpr
+    else if (exponent == OneExpr)  base
     else {
-      leftOp match {
-        case NumberExpression(n1) => rightOp match {
+      base match {
+        case NumberExpression(n1) => exponent match {
           case NumberExpression(n2) => NumberExpression(n1 ** n2)
-          case _ => new Exponentiation(leftOp, rightOp)
+          case _ => new Exponentiation(base, exponent)
         }
-        case _ => new Exponentiation(leftOp, rightOp)
+        case _ => new Exponentiation(base, exponent)
       }
     }
 
   def unapply(ex: Exponentiation) = Some((ex.base, ex.exponent))
 }
 
+// Helper classes and implicits to enable algebraic expressions, 
+// e.g., ex1 + ex2 instead of Sum(ex1, ex2).
+object ArithmeticDSL {
+  class WithOperators(val exp1: Expression) {
+    def +  (exp2: Expression) = Sum(exp1, exp2)
+    def -  (exp2: Expression) = Difference(exp1, exp2)
+    def *  (exp2: Expression) = Product(exp1, exp2)
+    def ** (exp2: Expression) = Exponentiation(exp1, exp2)
+  }
+
+  implicit def expressionToWithOperators(e: Expression) = new WithOperators(e)
+}
+import ArithmeticDSL._
+
+// Other convenient implicits
+object Implicits {
+  implicit def expressionStringToExpression(exp: String): Expression = 
+    expressionParser.parseAll(expressionParser.expression, exp) match {
+      case expressionParser.Success(e,_) => e
+      case x => throw new RuntimeException("expression parsing failed! "+x)
+    }
+    
+  implicit def intToNumberExpression(i: Int) = new NumberExpression(Number(i))
+
+  implicit def expressionStringToVariable(exp: String): Variable = Variable(exp)
+}
+import Implicits._
+  
 val Zero = Number(0)
 val One  = Number(1)
 val ZeroExpr = NumberExpression(Zero)
@@ -169,44 +200,33 @@ import scala.util.parsing.combinator._
 object expressionParser extends JavaTokenParsers {
   def expression = arithmeticExpression | number | variable
   def arithmeticExpression: Parser[Expression] = "(" ~> operator ~ operand ~ operand <~ ")" ^^ {
-    case Sum.Plus                ~ o1 ~ o2 => Sum(o1, o2)
-    case Difference.Minus        ~ o1 ~ o2 => Difference(o1, o2)
-    case Product.Times           ~ o1 ~ o2 => Product(o1, o2)
-    case Exponentiation.Exponent ~ o1 ~ o2 => Exponentiation(o1, o2)
+    case op ~ o1 ~ o2 => op(o1, o2)
   }
-  def operand = (arithmeticExpression | number | variable)
-  def number = wholeNumber ^^ { n => NumberExpression(Integer.parseInt(n)) }
-  def variable = ident ^^ { v => VariableExpression(v) }
+  def operand  = (arithmeticExpression | number | variable)
+  def number   = wholeNumber ^^ { n => NumberExpression(Integer.parseInt(n)) }
+  def variable = ident       ^^ { v => VariableExpression(v) }
   def operator = sum | difference | exponentiation | product
-  def sum            = "+"  ^^ { _ => Sum.Plus }
-  def difference     = "-"  ^^ { _ => Difference.Minus }
-  def exponentiation = "**" ^^ { _ => Exponentiation.Exponent }
-  def product        = "*"  ^^ { _ => Product.Times }
+  def sum            = "+"  ^^ { _ => Sum }
+  def difference     = "-"  ^^ { _ => Difference }
+  def exponentiation = "**" ^^ { _ => Exponentiation }
+  def product        = "*"  ^^ { _ => Product }
 }
 
-implicit def expressionStringToExpression(exp: String): Expression = 
-  expressionParser.parseAll(expressionParser.expression, exp) match {
-    case expressionParser.Success(e,_) => e
-    case x => throw new RuntimeException("expression parsing failed! "+x)
-  }
-  
-implicit def expressionStringToVariable(exp: String): Variable = Variable(exp)
 
 object Deriv {
   def apply (exp: Expression, variable: Variable): Expression = exp match {
     case NumberExpression(n) => ZeroExpr
     case VariableExpression(v) => if (v == variable) OneExpr else ZeroExpr
-    case Sum(addend, augend) => Sum(Deriv(addend, variable), Deriv(augend, variable))
+    case Sum(addend, augend) => Deriv(addend, variable) + Deriv(augend, variable)
     case Difference(minuend, subtrahend) =>
-      Difference(Deriv(minuend, variable), Deriv(subtrahend, variable))
+      Deriv(minuend, variable) - Deriv(subtrahend, variable)
     case Product(multiplier, multiplicand) => 
-      Sum(Product(multiplier, Deriv(multiplicand, variable)), 
-          Product(Deriv(multiplier, variable), multiplicand))
+      (multiplier * Deriv(multiplicand, variable)) + 
+      (Deriv(multiplier, variable) * multiplicand)
     case Exponentiation(base, exponent) => 
-      Product(Product(exponent, Exponentiation(base, Difference(exponent, OneExpr))), 
-              Deriv(base, variable))
+      exponent * (base ** Difference(exponent, OneExpr)) * Deriv(base, variable)
     case _ => 
-      throw new RuntimeException("unknown expression type -- DERIV: "+exp)
+      throw new RuntimeException("unknown expression type -- Deriv: "+exp)
   }
 }
 
@@ -214,21 +234,32 @@ import org.scalatest._
 import org.scalatest.matchers._
 
 object derivSpec extends Spec with ShouldMatchers {
-  implicit def intToNumberExpression(i: Int) = new NumberExpression(Number(i))
   
   describe ("expressionParser") {
     it ("should parse expression strings into list trees") {
       expressionStringToExpression("0")  should equal (ZeroExpr)
       expressionStringToExpression("1")  should equal (OneExpr)
       expressionStringToExpression("x")  should equal (VariableExpression("x"))
+      expressionStringToExpression("(+  0 2)")  should equal (NumberExpression(2))
+      expressionStringToExpression("(+  2 0)")  should equal (NumberExpression(2))
       expressionStringToExpression("(+  1 2)")  should equal (NumberExpression(3))
+      expressionStringToExpression("(-  0 2)")  should equal (NumberExpression(-2))
+      expressionStringToExpression("(-  2 0)")  should equal (NumberExpression(2))
       expressionStringToExpression("(-  1 2)")  should equal (NumberExpression(-1))
+      expressionStringToExpression("(*  2 0)")  should equal (NumberExpression(0))
+      expressionStringToExpression("(*  0 2)")  should equal (NumberExpression(0))
       expressionStringToExpression("(*  2 3)")  should equal (NumberExpression(6))
+      expressionStringToExpression("(** 0 3)")  should equal (NumberExpression(0))
+      expressionStringToExpression("(** 3 0)")  should equal (NumberExpression(1))
       expressionStringToExpression("(** 2 3)")  should equal (NumberExpression(8))
       expressionStringToExpression("(+  x 3)")  should equal (Sum("x", 3))
+      expressionStringToExpression("(+  3 x)")  should equal (Sum(3, "x"))
       expressionStringToExpression("(-  x 3)")  should equal (Difference("x", 3))
+      expressionStringToExpression("(-  3 x)")  should equal (Difference(3, "x"))
       expressionStringToExpression("(*  x 3)")  should equal (Product("x", 3))
+      expressionStringToExpression("(*  3 x)")  should equal (Product(3, "x"))
       expressionStringToExpression("(** x 3)")  should equal (Exponentiation("x", 3))
+      expressionStringToExpression("(** 3 x)")  should equal (Exponentiation(3, "x"))
       expressionStringToExpression("(* (* x y) (- x 3))") should equal (
         Product(Product("x", "y"), Difference("x", 3)))
     }
@@ -237,6 +268,7 @@ object derivSpec extends Spec with ShouldMatchers {
     it ("should compute the correct differentation expressions") {
       Deriv ("(+ x 3)", "x").toString should equal ("1")
       Deriv ("(- x 3)", "x").toString should equal ("1")
+      Deriv ("(- 3 x)", "x").toString should equal ("-1")
       Deriv ("(* x y)", "x").toString should equal ("y")
       Deriv ("(* (* x y) (+ x 3))", "x").toString should equal ("(+ (* x y) (* y (+ x 3)))")
       Deriv ("(* (* x y) (- x 3))", "x").toString should equal ("(+ (* x y) (* y (- x 3)))")
