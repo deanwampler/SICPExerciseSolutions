@@ -80,9 +80,9 @@ object Sum {
 
   def apply(leftOp: Expression, rightOp: Expression) = leftOp match {
     case ZeroExpr => rightOp
-    case n1:NumberExpression => rightOp match {
+    case NumberExpression(n1) => rightOp match {
       case ZeroExpr => leftOp
-      case n2:NumberExpression => NumberExpression(n1.number + n2.number)
+      case NumberExpression(n2) => NumberExpression(n1 + n2)
       case _ => new Sum(leftOp, rightOp)
     }
     case _ => new Sum(leftOp, rightOp)
@@ -99,9 +99,9 @@ object Difference {
 
   def apply(leftOp: Expression, rightOp: Expression) = leftOp match {
     case ZeroExpr => new Difference(leftOp, rightOp)
-    case n1:NumberExpression => rightOp match {
+    case NumberExpression(n1) => rightOp match {
       case ZeroExpr => leftOp
-      case n2:NumberExpression => NumberExpression(n1.number - n2.number)
+      case NumberExpression(n2) => NumberExpression(n1 - n2)
       case _ => new Difference(leftOp, rightOp)
     }
     case _ => new Difference(leftOp, rightOp)
@@ -122,8 +122,8 @@ object Product {
     else if (rightOp == OneExpr) leftOp
     else {
       leftOp match {
-        case n1:NumberExpression => rightOp match {
-          case n2:NumberExpression => NumberExpression(n1.number * n2.number)
+        case NumberExpression(n1) => rightOp match {
+          case NumberExpression(n2) => NumberExpression(n1 * n2)
           case _ => new Product(leftOp, rightOp)
         }
         case _ => new Product(leftOp, rightOp)
@@ -145,8 +145,8 @@ object Exponentiation {
     else if (rightOp == OneExpr)  leftOp
     else {
       leftOp match {
-        case n1:NumberExpression => rightOp match {
-          case n2:NumberExpression => NumberExpression(n1.number ** n2.number)
+        case NumberExpression(n1) => rightOp match {
+          case NumberExpression(n2) => NumberExpression(n1 ** n2)
           case _ => new Exponentiation(leftOp, rightOp)
         }
         case _ => new Exponentiation(leftOp, rightOp)
