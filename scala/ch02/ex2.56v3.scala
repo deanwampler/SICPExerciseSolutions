@@ -5,7 +5,6 @@
 // This version uses types more extensively. One benefit is the reduction of
 // "throws" clauses for invalid cases, most of which can be eliminated.
 
-
 sealed abstract class Expression
 
 case class Variable(name: String) extends Expression {
@@ -28,8 +27,8 @@ case class Number(value: Int) extends Expression {
     case _ => base * power(base, exp - 1)
   }
 }
-
 implicit def intToNumber(i: Int) = Number(i)
+
 
 // We can't use a case class here because we need to define our own apply method
 // in the companion object.
@@ -51,6 +50,7 @@ class ArithmeticExpression(
   override def hashCode = 
     37 * (operator.hashCode + leftOperand.hashCode + rightOperand.hashCode)
 }
+
 object ArithmeticExpression {
   def apply(op: Operator, leftOp: Expression, rightOp: Expression):Expression = 
     op(leftOp, rightOp)
@@ -61,6 +61,8 @@ object ArithmeticExpression {
 
 sealed abstract class Operator(val symbol:String) extends Expression {
   override def toString = symbol 
+  // The factory method is used to produce a new Expression, reducing it, if
+  // appropriate.
   def apply(leftOp: Expression, rightOp: Expression): Expression
 }
 
@@ -125,6 +127,7 @@ case object Exponent extends Operator("**") {
 
 // Helper classes and implicits to enable algebraic expressions, 
 // e.g., ex1 + ex2 instead of Sum(ex1, ex2).
+
 object ArithmeticDSL {
   class WithOperators(val exp1: Expression) {
     def +  (exp2: Expression) = ArithmeticExpression(Plus, exp1, exp2)
@@ -139,9 +142,11 @@ import ArithmeticDSL._
 
 // We use the parser combinator library to parse the expression strings into 
 // Expression objects. 
+
 import scala.util.parsing.combinator._
 
-// "wholeNumber" and "ident" supplied by JavaTokenParsers
+// "wholeNumber" and "ident" are supplied by JavaTokenParsers
+
 object expressionParser extends JavaTokenParsers {
   def expression = arithmeticExpression | number | variable
   def arithmeticExpression: Parser[Expression] = "(" ~> operator ~ operand ~ operand <~ ")" ^^ {
@@ -161,7 +166,6 @@ val Zero = Number(0)
 val One  = Number(1)
 
 object Deriv {
-  
   class ParseError(message: String) extends RuntimeException(message)
   
   def apply (exp: Expression, variable: Variable): Expression = exp match {
@@ -176,7 +180,7 @@ object Deriv {
       case Exponent =>
         rightOp * (leftOp ** (rightOp - One)) * Deriv(leftOp, variable)
     }
-    case o:Operator => throw new ParseError("bare operator found: "+o)
+    case o:Operator => throw new ParseError("An operator requires two operands: "+o)
   }
   
   def apply (exp: String, variable: String): Expression =
@@ -213,16 +217,25 @@ object derivSpec extends Spec with ShouldMatchers {
       expressionStringToExpression("(** 0 3)")  should equal (Number(0))
       expressionStringToExpression("(** 3 0)")  should equal (Number(1))
       expressionStringToExpression("(** 2 3)")  should equal (Number(8))
-      expressionStringToExpression("(+  x 3)")  should equal (ArithmeticExpression(Plus, Variable("x"), Number(3)))
-      expressionStringToExpression("(+  3 x)")  should equal (ArithmeticExpression(Plus, 3, "x"))
-      expressionStringToExpression("(-  x 3)")  should equal (ArithmeticExpression(Minus, "x", 3))
-      expressionStringToExpression("(-  3 x)")  should equal (ArithmeticExpression(Minus, 3, "x"))
-      expressionStringToExpression("(*  x 3)")  should equal (ArithmeticExpression(Times, "x", 3))
-      expressionStringToExpression("(*  3 x)")  should equal (ArithmeticExpression(Times, 3, "x"))
-      expressionStringToExpression("(** x 3)")  should equal (ArithmeticExpression(Exponent, "x", 3))
-      expressionStringToExpression("(** 3 x)")  should equal (ArithmeticExpression(Exponent, 3, "x"))
+      expressionStringToExpression("(+  x 3)")  should equal (
+        ArithmeticExpression(Plus, Variable("x"), Number(3)))
+      expressionStringToExpression("(+  3 x)")  should equal (
+        ArithmeticExpression(Plus, 3, "x"))
+      expressionStringToExpression("(-  x 3)")  should equal (
+        ArithmeticExpression(Minus, "x", 3))
+      expressionStringToExpression("(-  3 x)")  should equal (
+        ArithmeticExpression(Minus, 3, "x"))
+      expressionStringToExpression("(*  x 3)")  should equal (
+        ArithmeticExpression(Times, "x", 3))
+      expressionStringToExpression("(*  3 x)")  should equal (
+        ArithmeticExpression(Times, 3, "x"))
+      expressionStringToExpression("(** x 3)")  should equal (
+        ArithmeticExpression(Exponent, "x", 3))
+      expressionStringToExpression("(** 3 x)")  should equal (
+        ArithmeticExpression(Exponent, 3, "x"))
       expressionStringToExpression("(* (* x y) (- x 3))") should equal (
-        ArithmeticExpression(Times, ArithmeticExpression(Times, "x", "y"), ArithmeticExpression(Minus, "x", 3)))
+        ArithmeticExpression(Times, ArithmeticExpression(Times, "x", "y"), 
+                                    ArithmeticExpression(Minus, "x", 3)))
     }
   }
   describe ("Deriv") {
@@ -232,8 +245,10 @@ object derivSpec extends Spec with ShouldMatchers {
       Deriv ("(- x 3)", "x").toString should equal ("1")
       Deriv ("(- 3 x)", "x").toString should equal ("-1")
       Deriv ("(* x y)", "x").toString should equal ("y")
-      Deriv ("(* (* x y) (+ x 3))", "x").toString should equal ("(+ (* x y) (* y (+ x 3)))")
-      Deriv ("(* (* x y) (- x 3))", "x").toString should equal ("(+ (* x y) (* y (- x 3)))")
+      Deriv ("(* (* x y) (+ x 3))", "x").toString should equal (
+        "(+ (* x y) (* y (+ x 3)))")
+      Deriv ("(* (* x y) (- x 3))", "x").toString should equal (
+        "(+ (* x y) (* y (- x 3)))")
       
       Deriv ("(** x 1)", "x").toString should equal ("1")
       Deriv ("(** x 2)", "x").toString should equal ("(* 2 x)")
