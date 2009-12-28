@@ -31,6 +31,9 @@ case class Number(value: Int) extends Expression {
 
 implicit def intToNumber(i: Int) = Number(i)
 
+// We can't use a case class here because we need to define our own apply method
+// in the companion object.
+
 class ArithmeticExpression(
   val operator: Operator, 
   val leftOperand: Expression, 
@@ -38,10 +41,13 @@ class ArithmeticExpression(
 
   override def toString = 
     String.format("(%s %s %s)", operator, leftOperand, rightOperand)
+
   override def equals(other: Any) = other match {
     case ArithmeticExpression(op, left, right) =>
       op == operator && left == leftOperand && right == rightOperand
+    case _ => false
   }
+
   override def hashCode = 
     37 * (operator.hashCode + leftOperand.hashCode + rightOperand.hashCode)
 }
