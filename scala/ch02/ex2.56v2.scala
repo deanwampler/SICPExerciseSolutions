@@ -198,7 +198,7 @@ object Deriv {
       (multiplier * Deriv(multiplicand, variable)) + 
       (Deriv(multiplier, variable) * multiplicand)
     case Exponentiation(base, exponent) => 
-      exponent * (base ** Difference(exponent, One)) * Deriv(base, variable)
+      exponent * (base ** (exponent - One)) * Deriv(base, variable)
     case _ => 
       throw new RuntimeException("unknown expression type -- Deriv: "+exp)
   }
