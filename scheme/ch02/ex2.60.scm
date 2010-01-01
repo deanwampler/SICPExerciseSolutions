@@ -26,7 +26,7 @@
 
 ; Must use the same implementation to find the true intersection. Will be slower
 ; due to the redundant entries, but the resulting set will have no duplicates.
-(define (intersection-set set1 set2) (append set1 set2)
+(define (intersection-set set1 set2)
   (cond ((or (null? set1) (null? set2)) '())
         ((element-of-set? (car set1) set2)
           (cons (car set1)
