@@ -29,20 +29,15 @@ elementOfSetSpec execute
 // unordered list implementation, just like element-of-set? above. This is true
 // because the traversal of the existing set will stop when one of the two
 // conditionals (= or <) is true.
-def adjoinSet (i:Int, set: List[Int]) = {
-  def adj (leftSet: List[Int], rightSet: List[Int]): List[Int] = {
-    if (rightSet == Nil) 
-      (i :: leftSet).reverse
-    else {
-      val r = rightSet.head
-      if      (i == r) set
-      else if (i < r) 
-        leftSet.reverse ++ (i :: rightSet)
-      else 
-        adj (r :: leftSet, rightSet.tail)
-    }
+def adjoinSet (i:Int, set: List[Int]): List[Int] = {
+  if (set == Nil)
+    List (i)
+  else {
+    val s = set.head
+    if      (i == s) set
+    else if (i < s) i :: set
+    else s :: adjoinSet(i, set.tail)
   }
-  adj (Nil, set)
 }
   
 object adjoinSetSpec extends Spec with ShouldMatchers {

@@ -19,16 +19,13 @@
 ; because the traversal of the existing set will stop when one of the two
 ; conditionals (= or <) is true.
 (define (adjoin-set x set)
-  (define (adj left-set right-set)
-    (if (null? right-set) 
-        (reverse (cons x left-set))
-        (let ((r (car right-set)))
-          (cond ((= x r) set)
-                ((< x r)
-                  (append (reverse left-set) (cons x right-set)))
-                (else (adj (cons r left-set) (cdr right-set)))))))
-  (adj '() set))
-    
+  (if (null? set)
+      (list x)
+      (let ((s (car set)))
+        (cond ((= x s) set)
+              ((< x s) (cons x set))
+              (else (cons s (adjoin-set x (cdr set))))))))
+
 (check-equal? (adjoin-set 1 '()) '(1))
 (check-equal? (adjoin-set 1 '(1)) '(1))
 (check-equal? (adjoin-set 1 '(2)) '(1 2))

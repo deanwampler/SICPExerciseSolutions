@@ -25,14 +25,12 @@
 ; because the traversal of the existing set will stop when one of the two
 ; conditionals (= or <) is true.
 (defn adjoin-set [x set]
-  (loop [left-set '() right-set set]
-    (if (empty? right-set) 
-        (reverse (cons x left-set))
-        (let [r (first right-set)]
-          (cond (= x r) set
-                (< x r)
-                  (append (reverse left-set) (cons x right-set))
-                :else (recur (cons r left-set) (rest right-set)))))))
+  (if (empty? set)
+      (list x)
+      (let [s (first set)]
+        (cond (= x s) set
+              (< x s) (cons x set)
+              :else (cons s (adjoin-set x (rest set)))))))
 
 (deftest test-adjoin-set
   (is (= '(1) (adjoin-set 1 '())))
