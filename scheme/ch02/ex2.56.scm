@@ -88,6 +88,18 @@
         (else 
           (error "unknown expression type -- DERIV" exp))))
 
+(check-equal?  (make-sum 2 0) 2)
+(check-equal?  (make-sum 2 3) 5)
+(check-equal?  (make-sum 2 -3) -1)
+
+(check-equal?  (make-difference 2 0) 2)
+(check-equal?  (make-difference 2 3) -1)
+(check-equal?  (make-difference 2 -3) 5)
+
+(check-equal?  (make-product 2 0) 0)
+(check-equal?  (make-product 2 3) 6)
+(check-equal?  (make-product 2 -3) -6)
+
 (check-equal?  (make-exponentiation 2 0) 1)
 (check-equal?  (make-exponentiation 2 1) 2)
 (check-equal?  (make-exponentiation 2 2) 4)
