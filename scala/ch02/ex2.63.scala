@@ -1,3 +1,6 @@
+// Compare with ex2.63b.scala, which doesn't use Option[Tree], but instead uses
+// case classes (which is a better approach...)
+
 type Entry = Int
 case class Tree(entry: Entry, leftBranch: Option[Tree], rightBranch: Option[Tree])
 

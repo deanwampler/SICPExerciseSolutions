@@ -1,18 +1,25 @@
-// Compare with ex2.66b.scala, which doesn't use Option[Tree], but instead uses
+// Compare with ex2.65.scala, which uses Option[Tree], instead of using
 // case classes (which is a better approach...)
 
 // Use a pair for the key-value.
 type Key = Int
 type Value = Int
 case class Entry(key: Key, value: Value)
-case class Tree(entry: Entry, leftBranch: Option[Tree], rightBranch: Option[Tree])
+
+sealed abstract class Tree
+case object EmptyTree extends Tree
+case class TreeWithBranches(
+  entry: Entry, leftBranch: Tree, rightBranch: Tree) extends Tree
+// Leaf is not a case class because of equals & hashcode don't work properly
+// under inheritance of one case class from another.
+class Leaf(entry: Entry) extends TreeWithBranches(entry, EmptyTree, EmptyTree)
 
 def listToTree (elements: List[Entry]) =
   partialTree (elements, elements.length)
-  
-def partialTree (elts: List[Entry], n: Int): (Option[Tree], List[Entry]) =
+
+def partialTree (elts: List[Entry], n: Int): (Tree, List[Entry]) =
   if (n == 0)
-    (None, elts)
+    (EmptyTree, elts)
   else {
     val leftSize      = (n - 1) / 2
     val leftResult    = partialTree (elts, leftSize)
@@ -23,17 +30,17 @@ def partialTree (elts: List[Entry], n: Int): (Option[Tree], List[Entry]) =
     val rightResult   = partialTree (nonLeftElts.tail, rightSize)
     val rightTree     = rightResult._1
     val remainingElts = rightResult._2
-    (Some(Tree(thisEntry, leftTree, rightTree)), remainingElts)
+    (TreeWithBranches(thisEntry, leftTree, rightTree), remainingElts)
   }
   
-def lookup (key: Key, set: Option[Tree]): Option[Value] = set match {
-  case None => None
-  case Some(s) => 
-    if      (key == s.entry.key) Some(s.entry.value)
-    else if (key <  s.entry.key) 
-      lookup (key, s.leftBranch)
+def lookup (key: Key, set: Tree): Option[Value] = set match {
+  case EmptyTree => None
+  case TreeWithBranches(entry, left, right) => 
+    if      (key == entry.key) Some(entry.value)
+    else if (key <  entry.key) 
+      lookup (key, left)
     else
-      lookup (key, s.rightBranch)
+      lookup (key, right)
 }
 
 // Here is the tree for (1 2 3 4 5 6 7 8 9 10), showing the keys only. We'll
@@ -51,24 +58,24 @@ import org.scalatest.matchers._
 
 val entries = (0 to 10) map (n => Entry(n, 10 * n)) toArray
 
-val LEAF1  = Some(Tree(entries(1),  None, None))
-val LEAF4  = Some(Tree(entries(4),  None, None))
-val LEAF6  = Some(Tree(entries(6),  None, None))
-val LEAF8  = Some(Tree(entries(8),  None, None))
-val LEAF10 = Some(Tree(entries(10), None, None))
+val LEAF1  = TreeWithBranches(entries(1),  EmptyTree, EmptyTree)
+val LEAF4  = TreeWithBranches(entries(4),  EmptyTree, EmptyTree)
+val LEAF6  = TreeWithBranches(entries(6),  EmptyTree, EmptyTree)
+val LEAF8  = TreeWithBranches(entries(8),  EmptyTree, EmptyTree)
+val LEAF10 = TreeWithBranches(entries(10), EmptyTree, EmptyTree)
 
 val tree = 
-  Some(Tree(entries(5), 
-    Some(Tree(entries(3), 
-      Some(Tree(entries(2), 
+  TreeWithBranches(entries(5), 
+    TreeWithBranches(entries(3), 
+      TreeWithBranches(entries(2), 
         LEAF1, 
-        None)),
-      LEAF4)),
-    Some(Tree(entries(7), 
+        EmptyTree),
+      LEAF4),
+    TreeWithBranches(entries(7), 
       LEAF6, 
-      Some(Tree(entries(9), 
+      TreeWithBranches(entries(9), 
         LEAF8,
-        LEAF10))))))
+        LEAF10)))
       
 
 def make10xListTotree = 

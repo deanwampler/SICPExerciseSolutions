@@ -1,34 +1,41 @@
-// Compare with ex2.65b.scala, which doesn't use Option[Tree], but instead uses
+// Compare with ex2.65.scala, which uses Option[Tree], instead of using
 // case classes (which is a better approach...)
 
 type Entry = Int
-case class Tree(entry: Entry, leftBranch: Option[Tree], rightBranch: Option[Tree])
+sealed abstract class Tree
+case object EmptyTree extends Tree
+case class TreeWithBranches(
+  entry: Entry, leftBranch: Tree, rightBranch: Tree) extends Tree
+// Leaf is not a case class because of equals & hashcode don't work properly
+// under inheritance of one case class from another.
+class Leaf(entry: Entry) extends TreeWithBranches(entry, EmptyTree, EmptyTree)
 
-def elementOfSet (x: Entry, set: Option[Tree]): Boolean = set match {
-  case None => false
-  case Some(s) => 
-    if      (x == s.entry) true
-    else if (x <  s.entry) 
-      elementOfSet (x, s.leftBranch)
+def elementOfSet (entry: Entry, set: Tree): Boolean = set match {
+  case EmptyTree => false
+  case TreeWithBranches(e, left, right) => 
+    if      (e == entry) true
+    else if (e >  entry) 
+      elementOfSet (entry, left)
     else
-      elementOfSet (x, s.rightBranch)
+      elementOfSet (entry, right)
+}
+        
+def adjoinSet (entry: Entry, set: Tree): Tree = set match {
+  case EmptyTree => new this.Leaf(entry)
+  case TreeWithBranches(e, left, right) =>
+    if      (e == entry) set
+    else if (e >  entry)
+      TreeWithBranches (e, adjoinSet (entry, left), right)
+    else
+      TreeWithBranches (e, left, adjoinSet (entry, right))
 }
 
-def adjoinSet (x: Entry, set: Option[Tree]): Option[Tree] = set match {
-  case None => Some(Tree(x, None, None))
-  case Some(s) =>
-    if      (x == s.entry) set
-    else if (x <  s.entry)
-      Some(Tree (s.entry, adjoinSet (x, s.leftBranch), s.rightBranch))
-    else
-      Some(Tree (s.entry, s.leftBranch, adjoinSet (x, s.rightBranch)))
-}
-
-// Use treeToList2 in Ex. 2.63.
-def treeToList (tree: Option[Tree]): List[Entry] = {
-  def copyToList (tree: Option[Tree], result: List[Entry]): List[Entry] = tree match {
-    case None => result
-    case Some(t) => copyToList(t.leftBranch, t.entry :: copyToList(t.rightBranch, result))
+// Use treeToList2 in Ex. 2.63b.
+def treeToList (tree: Tree): List[Entry] = {
+  def copyToList (tree: Tree, result: List[Entry]): List[Entry] = tree match {
+    case EmptyTree => result
+    case TreeWithBranches(e, left, right) =>
+      copyToList(left, e :: copyToList(right, result))
   }
   copyToList (tree, Nil)
 }
@@ -36,9 +43,10 @@ def treeToList (tree: Option[Tree]): List[Entry] = {
 def listToTree (elements: List[Entry]) =
   partialTree (elements, elements.length)
   
-def partialTree (elts: List[Entry], n: Int): (Option[Tree], List[Entry]) =
+
+def partialTree (elts: List[Entry], n: Int): (Tree, List[Entry]) =
   if (n == 0)
-    (None, elts)
+    (EmptyTree, elts)
   else {
     val leftSize      = (n - 1) / 2
     val leftResult    = partialTree (elts, leftSize)
@@ -49,7 +57,7 @@ def partialTree (elts: List[Entry], n: Int): (Option[Tree], List[Entry]) =
     val rightResult   = partialTree (nonLeftElts.tail, rightSize)
     val rightTree     = rightResult._1
     val remainingElts = rightResult._2
-    (Some(Tree(thisEntry, leftTree, rightTree)), remainingElts)
+    (TreeWithBranches(thisEntry, leftTree, rightTree), remainingElts)
   }
   
 // One way to implement the functions using what we already have is to convert the
@@ -92,9 +100,9 @@ def unionSetLists (set1: List[Entry], set2: List[Entry]): List[Entry] = {
   }
 }
 
-def unionSet (set1: Option[Tree], set2: Option[Tree]): Option[Tree] =
+def unionSet (set1: Tree, set2: Tree): Tree =
   listToTree (unionSetLists (treeToList (set1), (treeToList (set2))))._1
-def intersectionSet (set1: Option[Tree], set2: Option[Tree]): Option[Tree] =
+def intersectionSet (set1: Tree, set2: Tree): Tree =
   listToTree (intersectionSetLists (treeToList (set1), (treeToList (set2))))._1
   
 //
@@ -144,24 +152,31 @@ def intersectionSet (set1: Option[Tree], set2: Option[Tree]): Option[Tree] =
 import org.scalatest._ 
 import org.scalatest.matchers._
 
-val LEAF1  = Some(Tree(1,  None, None))
-val LEAF4  = Some(Tree(4,  None, None))
-val LEAF5  = Some(Tree(5,  None, None))
-val LEAF7  = Some(Tree(7,  None, None))
-val LEAF8  = Some(Tree(8,  None, None))
-val LEAF11 = Some(Tree(11, None, None))
+val LEAF1  = TreeWithBranches(1,  EmptyTree, EmptyTree)
+val LEAF4  = TreeWithBranches(4,  EmptyTree, EmptyTree)
+val LEAF5  = TreeWithBranches(5,  EmptyTree, EmptyTree)
+val LEAF7  = TreeWithBranches(7,  EmptyTree, EmptyTree)
+val LEAF8  = TreeWithBranches(8,  EmptyTree, EmptyTree)
+val LEAF11 = TreeWithBranches(11, EmptyTree, EmptyTree)
 
 object unionSetSpec extends Spec with ShouldMatchers {
 
   describe ("unionSet for trees") {
     it ("should return an ordered tree that is the union of two ordered trees") {
       unionSet(
-        Some(Tree(5, Some(Tree(3, LEAF1, None)),
-                     Some(Tree(9, LEAF7, LEAF11)))),
-        Some(Tree(6, Some(Tree(5, LEAF4, None)),
-                     Some(Tree(7, None, LEAF8))))) should equal (
-      Some(Tree(6, Some(Tree(3, LEAF1, Some(Tree(4, None, LEAF5)))),
-                   Some(Tree(8, LEAF7, Some(Tree(9, None, LEAF11)))))))
+        TreeWithBranches(5, 
+          TreeWithBranches(3, LEAF1, EmptyTree),
+          TreeWithBranches(9, LEAF7, LEAF11)),
+        TreeWithBranches(6, 
+          TreeWithBranches(5, LEAF4, EmptyTree),
+          TreeWithBranches(7, EmptyTree, LEAF8))) should equal (
+        TreeWithBranches(6, 
+          TreeWithBranches(3, 
+            LEAF1, 
+            TreeWithBranches(4, EmptyTree, LEAF5)),
+           TreeWithBranches(8, 
+            LEAF7, 
+            TreeWithBranches(9, EmptyTree, LEAF11))))
     }
   }
 }       
@@ -171,11 +186,13 @@ object intersectionSetSpec extends Spec with ShouldMatchers {
   describe ("intersectionSet for trees") {
     it ("should return an ordered tree that is the intersection of two ordered trees") {
       intersectionSet(
-        Some(Tree(5, Some(Tree(3, LEAF1, None)),
-                     Some(Tree(9, LEAF7, LEAF11)))),
-        Some(Tree(6, Some(Tree(5, LEAF4, None)),
-                     Some(Tree(7, None, LEAF8))))) should equal (
-      Some(Tree(5, None, LEAF7)))
+        TreeWithBranches(5, 
+          TreeWithBranches(3, LEAF1, EmptyTree),
+          TreeWithBranches(9, LEAF7, LEAF11)),
+        TreeWithBranches(6, 
+          TreeWithBranches(5, LEAF4, EmptyTree),
+          TreeWithBranches(7, EmptyTree, LEAF8))) should equal (
+        TreeWithBranches(5, EmptyTree, LEAF7))
     }
   }
 }                        

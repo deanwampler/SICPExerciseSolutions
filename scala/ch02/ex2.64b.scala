@@ -1,15 +1,22 @@
-// Compare with ex2.64b.scala, which doesn't use Option[Tree], but instead uses
+// Compare with ex2.64.scala, which uses Option[Tree], instead of using
 // case classes (which is a better approach...)
 
 type Entry = Int
-case class Tree(entry: Entry, leftBranch: Option[Tree], rightBranch: Option[Tree])
+sealed abstract class Tree
+case object EmptyTree extends Tree
+case class TreeWithBranches(
+  entry: Entry, leftBranch: Tree, rightBranch: Tree) extends Tree
+// Leaf is not a case class because of equals & hashcode don't work properly
+// under inheritance of one case class from another.
+class Leaf(entry: Entry) extends TreeWithBranches(entry, EmptyTree, EmptyTree)
+
 
 def listToTree (elements: List[Entry]) =
   partialTree (elements, elements.length)
   
-def partialTree (elts: List[Entry], n: Int): (Option[Tree], List[Entry]) =
+def partialTree (elts: List[Entry], n: Int): (Tree, List[Entry]) =
   if (n == 0)
-    (None, elts)
+    (EmptyTree, elts)
   else {
     val leftSize      = (n - 1) / 2
     val leftResult    = partialTree (elts, leftSize)
@@ -20,7 +27,7 @@ def partialTree (elts: List[Entry], n: Int): (Option[Tree], List[Entry]) =
     val rightResult   = partialTree (nonLeftElts.tail, rightSize)
     val rightTree     = rightResult._1
     val remainingElts = rightResult._2
-    (Some(Tree(thisEntry, leftTree, rightTree)), remainingElts)
+    (TreeWithBranches(thisEntry, leftTree, rightTree), remainingElts)
   }
   
 import org.scalatest._ 
@@ -30,8 +37,13 @@ object listToTreeSpec extends Spec with ShouldMatchers {
   describe ("listToTree") {
     it ("should return an ordered tree from an ordered lists") {
       listToTree(List(1, 3, 5, 7, 9, 11)) should equal (
-        (Some(Tree(5, Some(Tree(1, None, Some(Tree(3, None, None)))),
-                      Some(Tree(9, Some(Tree(7, None, None)), Some(Tree(11, None, None)))))),
+        (TreeWithBranches(5, 
+          TreeWithBranches(1, 
+            EmptyTree, 
+            TreeWithBranches(3, EmptyTree, EmptyTree)),
+          TreeWithBranches(9, 
+            TreeWithBranches(7, EmptyTree, EmptyTree), 
+            TreeWithBranches(11, EmptyTree, EmptyTree))),
          Nil)
         )
     }
