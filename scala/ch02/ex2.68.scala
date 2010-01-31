@@ -78,7 +78,6 @@ import org.scalatest._
 import org.scalatest.matchers._
 
 object huffmanEncodeSpec extends Spec with ShouldMatchers {
-
   describe ("encode") {
     it ("should return the sequence of bits for a sequence of letters") {
       encode (List('A), sampleTree) should equal (List(Zero))

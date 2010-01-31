@@ -9,7 +9,7 @@
 
 (defn symbols [tree]
   (if (leaf? tree)
-      [symbol-leaf tree]
+      [(symbol-leaf tree)]
       (nth tree 2)))
 
 (defn weight [tree]
@@ -20,7 +20,7 @@
 (defn make-code-tree [left right]
   [left
    right
-   (conj (symbols left) (symbols right))
+   (into (symbols left) (symbols right))
    (+ (weight left) (weight right))])
         
 (defn left-branch [tree] (first tree))
@@ -73,6 +73,10 @@
         
 (def expected-message [0 1 1 0 0 1 0 1 0 1 1 1 0])
 
+(deftest test-make-code-tree
+  (is (= (make-code-tree (make-leaf 'D 1) (make-leaf 'C 1)) 
+         '[[leaf D 1] [leaf C 1] [D C] 2])))
+  
 (deftest test-encode
   (is (= (encode '[A] sample-tree) [0]))
   (is (= (encode '[B] sample-tree) [1 0]))
