@@ -43,7 +43,6 @@ def treeToList (tree: Tree): List[Entry] = {
 def listToTree (elements: List[Entry]) =
   partialTree (elements, elements.length)
   
-
 def partialTree (elts: List[Entry], n: Int): (Tree, List[Entry]) =
   if (n == 0)
     (EmptyTree, elts)

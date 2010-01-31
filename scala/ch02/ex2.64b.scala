@@ -10,7 +10,6 @@ case class TreeWithBranches(
 // under inheritance of one case class from another.
 class Leaf(entry: Entry) extends TreeWithBranches(entry, EmptyTree, EmptyTree)
 
-
 def listToTree (elements: List[Entry]) =
   partialTree (elements, elements.length)
   
