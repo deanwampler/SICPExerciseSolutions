@@ -52,7 +52,7 @@
 ; could be either pairs or subtrees).
 (define (successive-merge leaf-set)
   (if (= 1 (length leaf-set)) ; when 1, we have 1 tree, rather than a set of leaves
-      leaf-set
+      (car leaf-set)  ; We have ((set)), so return (set)
       (successive-merge (adjoin-set (make-code-tree (car leaf-set) (cadr leaf-set)) (cddr leaf-set)))))
     
 ; Starting with '((A 4) (B 2) (C 1) (D 1)), we should get the following encoding:
@@ -69,10 +69,10 @@
 ; (((leaf A 4) ((leaf B 2) ((leaf D 1) (leaf C 1) (D C) 2) (B D C) 4) (A B D C) 8))
 
 (check-equal? (generate-huffman-tree '((A 4) (B 2) (C 1) (D 1)))
-              '(((leaf A 4) ((leaf B 2) ((leaf D 1) (leaf C 1) (D C) 2) (B D C) 4) (A B D C) 8)))
+              '((leaf A 4) ((leaf B 2) ((leaf D 1) (leaf C 1) (D C) 2) (B D C) 4) (A B D C) 8))
               
 (check-equal? (generate-huffman-tree '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
-              '(((leaf A 8) ((((leaf H 1) (leaf G 1) (H G) 2) 
+              '((leaf A 8) ((((leaf H 1) (leaf G 1) (H G) 2) 
                 ((leaf F 1) (leaf E 1) (F E) 2) (H G F E) 4) 
                 (((leaf D 1) (leaf C 1) (D C) 2) (leaf B 3) (D C B) 5) 
-                  (H G F E D C B) 9) (A H G F E D C B) 17)))
+                  (H G F E D C B) 9) (A H G F E D C B) 17))
