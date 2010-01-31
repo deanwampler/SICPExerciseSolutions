@@ -43,7 +43,27 @@
     (cond ((= bit 0) (left-branch branch))
           ((= bit 1) (right-branch branch))
           (else (error "bad bit -- choose-branch" bit))))
-          
+
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append (encode-symbol (car message) tree)
+              (encode (cdr message) tree))))
+
+(define (encode-symbol symbol tree)
+  (define (encode-sym subtree result)
+    (if (leaf? subtree)
+        (if (eq? symbol (symbol-leaf subtree)) result '())
+        (let ((left-result  (encode-sym (left-branch subtree) (cons 0 result)))
+              (right-result (encode-sym (right-branch subtree) (cons 1 result))))
+          (cond ((not (empty? left-result)) left-result)
+                ((not (empty? right-result)) right-result)
+                (else '())))))
+  (let ((answer (reverse (encode-sym tree '()))))
+    (if (null? answer)
+        (error "Could not encode symbol")
+        answer)))
+  
 (define sample-tree
   (make-code-tree 
     (make-leaf 'A 4)
@@ -53,6 +73,11 @@
         (make-leaf 'D 1)
         (make-leaf 'C 1)))))
         
-(define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+(define expected-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
-(check-equal? (decode sample-message sample-tree) '(A D A B B C A))
+(check-equal? (encode '(A) sample-tree) '(0))
+(check-equal? (encode '(B) sample-tree) '(1 0))
+(check-equal? (encode '(C) sample-tree) '(1 1 1))
+(check-equal? (encode '(D) sample-tree) '(1 1 0))
+(check-equal? (encode '(A D A B B C A) sample-tree) expected-message)
+; (check-equal? (encode '(E) sample-tree) '(1 1 0))
