@@ -1,0 +1,17 @@
+When the weights are 1, 2, 4, ..., 2**(n-1) then for n=5, we have these ordered pairs:
+
+((a 1) (b 2) (c 4) (d 8) (e 16))
+
+which yields this tree:
+        +
+       / \
+      +   e
+     / \
+    +   d
+   / \
+  +   c
+ / \
+a   b
+
+
+So, 1 bit is required to encode the most frequent symbol and (n-1) bits are required for the least frequent.
