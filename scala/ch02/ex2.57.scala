@@ -236,22 +236,22 @@ object derivSpec extends Spec with ShouldMatchers {
     it ("should compute the correct differentation expressions") {
       deriv ("(+ x 3)", "x") should equal ("1")
       deriv ("(+ x x 3)", "x") should equal ("2")
-      // deriv ("(- x 3)", "x") should equal ("1")
-      // deriv ("(- x x 3)", "x") should equal ("0")
-      // deriv ("(- x x x x 3)", "x") should equal ("-2")
-      // deriv ("(* x y)", "x") should equal ("y")
-      // deriv ("(* x x y)", "x") should equal ("(+ (* x y) (* x y))")
-      // deriv ("(* (* x y) (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
-      // deriv ("(* x y (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
-      // deriv ("(* (* x y) (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
-      // deriv ("(* x y (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
-      // 
-      // deriv ("(** x 1)", "x") should equal ("1")
-      // deriv ("(** x 2)", "x") should equal ("(* 2 x)")
-      // deriv ("(** x 2 3)", "x") should equal ("(* 6 (** x 5)")
-      // deriv ("(** x 3)", "x") should equal ("(* 3 (** x 2))")
-      // deriv ("(** x 4)", "x") should equal ("(* 4 (** x 3))")
-      // deriv ("(** x n)", "x") should equal ("(* n (** x (- n 1)))")
+      deriv ("(- x 3)", "x") should equal ("1")
+      deriv ("(- x x 3)", "x") should equal ("0")
+      deriv ("(- x x x x 3)", "x") should equal ("-2")
+      deriv ("(* x y)", "x") should equal ("y")
+      deriv ("(* x x y)", "x") should equal ("(+ (* x y) (* x y))")
+      deriv ("(* (* x y) (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
+      deriv ("(* x y (+ x 3))", "x") should equal ("(+ (* x y) (* y (+ x 3)))")
+      deriv ("(* (* x y) (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
+      deriv ("(* x y (- x 3))", "x") should equal ("(+ (* x y) (* y (- x 3)))")
+      
+      deriv ("(** x 1)", "x") should equal ("1")
+      deriv ("(** x 2)", "x") should equal ("(* 2 x)")
+      deriv ("(** x 2 3)", "x") should equal ("(* 6 (** x 5))")
+      deriv ("(** x 3)", "x") should equal ("(* 3 (** x 2))")
+      deriv ("(** x 4)", "x") should equal ("(* 4 (** x 3))")
+      deriv ("(** x n)", "x") should equal ("(* n (** x (- n 1)))")
     }
   }
 }
