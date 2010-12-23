@@ -6,6 +6,15 @@ These are solutions for many of the SICP exercises, written in Scheme, Scala, an
 
 Feedback is welcome.
 
+## Updates December 2010 ##
+
+After a long hiatus, I returned to the problems. Starting around exercise 2.74. I've updated the build environment, too:
+
+* **Scala**: Now using scala v2.8.1.final and ScalaTest 1.2.
+* **Clojure**: Now using Clojure 1.2 and Clojure Contrib 1.2.
+* **Scheme**: Now using PLT Scheme (now called "Racket") 5.0.X.
+* **Makefile**: Minor refinements. 
+
 ## Running the Solutions ##
 
 There is a simple Makefile that runs all the solutions. However, it appears that failed tests don't return `$? = 1` for all the runtimes (?), so if a particular exercise solution fails, `make` won't exit.
@@ -22,7 +31,7 @@ I use *SchemeUnit* as the XUnit tool and run the solutions using *PLT Scheme*, i
 
 I'm a self-proclaimed Scala expert: [Programming Scala](http://oreilly.com/catalog/9780596155957/) ;) Hence, some of my solutions use idioms that haven't been introduced at that point in the book. 
 
-I use Scala v2.7.X and [ScalaTest](http://www.artima.com/scalatest/) v1.0 to run the solutions. You'll need to add the `scalatest-x.y.jar` to the `CLASSPATH`. I invoke `scala` interactively, then load and execute files, *e.g.,*
+I use Scala v2.8.1 and [ScalaTest](http://www.artima.com/scalatest/) v1.0 to run the solutions. You'll need to add the `scalatest-x.y.jar` to the `CLASSPATH`. I invoke `scala` interactively, then load and execute files, *e.g.,*
 
     scala -cp $SCALA_TEST_HOME/scalatest-1.0/scalatest-1.0.jar
     scala> :load ex1.3.scala

@@ -2,7 +2,7 @@
 
 def cube (x: Double) = x * x * x
 
-def abs (x: Double) = Math.abs(x)
+def abs (x: Double) = math.abs(x)
   
 def improve (guess: Double, x: Double) = 
   ((x / (guess * guess)) + (2.0 * guess)) / 3.0

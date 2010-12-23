@@ -2,7 +2,7 @@
 
 val tolerance = 0.00001
 
-def abs(x: Double) = Math.abs(x)
+def abs(x: Double) = math.abs(x)
 
 def closeEnough(x: Double, y: Double) = abs(x - y) < tolerance
 

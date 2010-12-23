@@ -2,9 +2,9 @@
 
 val tolerance = 0.00001
 
-// Could import these Math functions, but we get type ambiguities (?)
-def abs(x: Double) = Math.abs(x)
-def log(x: Double) = Math.log(x)
+// Could import these math functions, but we get type ambiguities (?)
+def abs(x: Double) = math.abs(x)
+def log(x: Double) = math.log(x)
 
 def closeEnough(x: Double, y: Double) = abs(x - y) < tolerance
 

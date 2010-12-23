@@ -1,5 +1,4 @@
 (ns sicp.ch02 (:use clojure.test))
-(use '[clojure.contrib.except :only (throw-if)])
 
 (defn make-interval [a b] [a b])
 (defn lower-bound [x] (get x 0))
@@ -13,12 +12,13 @@
     (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4))))
 
 (defn div-interval [x y]
-  (cond (or (= 0 (lower-bound y)) (= 0 (upper-bound y))) (throw (RuntimeException. "div by zero!")))
+  (cond (or (= 0 (lower-bound y)) (= 0 (upper-bound y))) (throw (ArithmeticException. "div by zero!")))
         :else 
           (mul-interval x (make-interval (/ 1.0 (upper-bound y)) 
                                          (/ 1.0 (lower-bound y)))))
                                  
-(try 
-  ((div-interval (make-interval 1 2) (make-interval 0 1))
-   (throw (Exception. "Should have thrown div/0 exception!")))
-  (catch RuntimeException _ ))
+(deftest test-div-interval
+  (is (thrown-with-msg? ArithmeticException #"div by zero!"
+    (div-interval (make-interval 1 2) (make-interval 0 1)))))
+
+(run-tests)

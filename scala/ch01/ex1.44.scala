@@ -28,7 +28,7 @@ smoothSpec execute
 val piOver4 = 3.14159265 / 4
 val dx = 0.005
 
-Math.sin(piOver4)
-repeated (smooth (Math.sin, dx), 1)(piOver4)
-repeated (smooth (Math.sin, dx), 2)(piOver4)
-repeated (smooth (Math.sin, dx), 4)(piOver4)
+math.sin(piOver4)
+repeated (smooth (math.sin, dx), 1)(piOver4)
+repeated (smooth (math.sin, dx), 2)(piOver4)
+repeated (smooth (math.sin, dx), 4)(piOver4)

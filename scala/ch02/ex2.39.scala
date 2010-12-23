@@ -15,7 +15,7 @@ def foldLeft[A, B] (op: (A, B) => B, initial: B, sequence: List[A]): B = {
 
 // Expect a warning for the + method:
 def reverseRight[A] (sequence: List[A]) =
-  foldRight ((a:A, l:List[A]) => l + a, Nil, sequence)
+  foldRight ((a:A, l:List[A]) => l :+ a, Nil, sequence)
 
 def reverseLeft[A] (sequence: List[A]) =
   foldLeft ((a: A, l:List[A]) => a :: l, Nil, sequence)

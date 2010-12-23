@@ -28,7 +28,7 @@ def calcInversePhiIter (n: Int) = contFracIter(one, one, n)
 val inversePhi = 0.6180339882723972
 val inversePhiTo4Places = 0.6180
 
-def roundTo4Places (x: Double) = Math.round(x * 10000.0) / 10000.0
+def roundTo4Places (x: Double) = math.round(x * 10000.0) / 10000.0
 assert (roundTo4Places(inversePhi) == inversePhiTo4Places)
 
 println("Inverse of phi: " + inversePhi)

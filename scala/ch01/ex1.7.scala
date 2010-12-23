@@ -4,8 +4,8 @@ def average (x: Double, y: Double) = (x + y) / 2
   
 def square (x: Double) = x * x
   
-// Could import this Math function, but we get type ambiguities (?)
-def abs (x: Double) = Math.abs(x)
+// Could import this math function, but we get type ambiguities (?)
+def abs (x: Double) = math.abs(x)
 
 def improve (guess: Double, x: Double) = average(guess, x / guess)
   

@@ -1,6 +1,6 @@
 val tolerance = 0.00001
 
-def closeEnough(x: Double, y: Double) = Math.abs(x - y) < tolerance
+def closeEnough(x: Double, y: Double) = math.abs(x - y) < tolerance
 
 def average(x: Double, y: Double) = (x + y) / 2
 

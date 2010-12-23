@@ -1,5 +1,4 @@
 (ns sicp.ch02 (:use clojure.test))
-(use '[clojure.contrib.except :only (throw-if)])
 
 (defn make-interval [a b] [a b])
 (defn lower-bound [x] (get x 0))

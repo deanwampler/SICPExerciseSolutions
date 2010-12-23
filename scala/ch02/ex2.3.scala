@@ -43,7 +43,7 @@ def iterativeImprove(goodEnough: (Double) => Boolean, improve: (Double) => Doubl
 
 def average(x: Double, y: Double) = (x + y) / 2.0
 
-def goodEnough(guess: Double, x: Double) = Math.abs(square(guess) - x) < tolerance
+def goodEnough(guess: Double, x: Double) = math.abs(square(guess) - x) < tolerance
 
 def improve(guess: Double, x: Double) = average(guess, x / guess)
   

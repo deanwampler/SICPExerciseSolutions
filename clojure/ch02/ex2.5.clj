@@ -1,5 +1,4 @@
 (ns sicp.ch02 (:use clojure.test))
-(use '[clojure.contrib.except :only (throw-if)])
 
 ;(defn even? [n] (= 0 (rem n 2)))
 (defn square [x] (* x x))

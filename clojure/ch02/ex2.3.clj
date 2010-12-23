@@ -1,5 +1,5 @@
-(ns sicp.ch02 (:use clojure.test))
-(use '[clojure.contrib.except :only (throw-if)])
+(ns sicp.ch02 
+  (:use clojure.test))
 
 ; Old sqrt calculation from ex. 1.46:
 
@@ -115,8 +115,7 @@
 
 ; start point for both segments must be the same.
 (defn make-rect-segments [s1 s2]
-  (throw-if (= false (equal-points? (start-segment s1) (start-segment s2))) 
-            (str "must use segments with the same starting points." (start-segment s1) (start-segment s2)))
+  (assert (equal-points? (start-segment s1) (start-segment s2)))
   [s1 s2])
 
 (defn height-rect-segment [r]

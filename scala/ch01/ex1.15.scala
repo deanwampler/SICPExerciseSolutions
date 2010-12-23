@@ -7,7 +7,7 @@ def p(x: Double) = {
 }
 
 def sine(angle: Double): Double = 
-  if (Math.abs(angle) < 0.1) angle else p(sine(angle / 3))
+  if (math.abs(angle) < 0.1) angle else p(sine(angle / 3))
 
 sine(12.15)
 

@@ -3,7 +3,7 @@ def gcd (a: Int, b: Int): Int = b match {
   case _ => gcd(b, a % b)
 }
       
-def abs (n: Int) = Math.abs(n)
+def abs (n: Int) = math.abs(n)
 
 def rationalizeSigns (n: Int, d: Int) = 
   if (n * d < 0) (- abs(n), abs(d)) else (abs(n), abs(d))

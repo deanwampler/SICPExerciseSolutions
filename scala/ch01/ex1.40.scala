@@ -2,8 +2,8 @@
 
 val dx = 0.00001
 
-// Could import these Math functions, but we get type ambiguities (?)
-def abs(x: Double) = Math.abs(x)
+// Could import these math functions, but we get type ambiguities (?)
+def abs(x: Double) = math.abs(x)
 
 def closeEnough(x: Double, y: Double) = abs(x - y) < dx
 

@@ -85,7 +85,7 @@ def generateHuffmanTree (pairs: List[Pair[Symbol, Weight]]) =
 // could be either pairs or subtrees).
 def successiveMerge (leafSet: List[Tree]): Tree = leafSet match {
   case head :: Nil => head   // when 1, we have 1 tree, rather than a set of leaves
-  case head :: tail => successiveMerge (adjoinSet (makeCodeTree (head, tail.first), tail.tail))
+  case head :: tail => successiveMerge (adjoinSet (makeCodeTree (head, tail.head), tail.tail))
   case Nil => throw new RuntimeException("Invalid leaf set: "+leafSet)
 }
     

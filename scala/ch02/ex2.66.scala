@@ -72,7 +72,7 @@ val tree =
       
 
 def make10xListTotree = 
-  listToTree(entries.slice(1, entries.size).force.toList)._1
+  listToTree(entries.slice(1, entries.size).toList)._1
   
 object lookupSetSpec extends Spec with ShouldMatchers {
 

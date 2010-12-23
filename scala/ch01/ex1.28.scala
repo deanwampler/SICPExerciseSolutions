@@ -1,7 +1,7 @@
 // Miller-Rabin Test
 
 def square (n: Int) = n * n
-def random(n: Long) = (Math.random * n) toInt
+def random(n: Long) = (math.random * n) toInt
 
 def mrTest (base: Int, exp: Int, m: Int) = base match {
   case 1 => false
