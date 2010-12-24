@@ -12,7 +12,7 @@ After a long hiatus, I returned to the problems. Starting around exercise 2.74. 
 
 * **Scala**: Now using scala v2.8.1.final and ScalaTest 1.2.
 * **Clojure**: Now using Clojure 1.2 and Clojure Contrib 1.2.
-* **Scheme**: Now using PLT Scheme (now called "Racket") 5.0.X.
+* **Scheme**: Now using Racket 5.0.X (the new name for PLT Scheme).
 * **Makefile**: Minor refinements. 
 
 ## Running the Solutions ##
